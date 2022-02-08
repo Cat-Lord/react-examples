@@ -1,0 +1,7 @@
+.extended-form {
+    margin:6px;
+}
+
+.extended-form * {
+    margin: 11px;
+}

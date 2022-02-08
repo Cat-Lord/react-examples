@@ -1,0 +1,13 @@
+.login-controls {
+    display: inline-flex;
+    align-items: center;
+    background-color: darkcyan;
+}
+
+.login-controls * {
+    margin: 8px;
+}
+
+#logged {
+    width:100%;
+}
