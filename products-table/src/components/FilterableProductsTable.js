@@ -21,6 +21,7 @@ export default class FilterableProductsTable extends Component {
     }
 
     this.onSearchTextChange = this.onSearchTextChange.bind(this);
+    this.onInStockOnlyChange = this.onInStockOnlyChange.bind(this);
   }
 
   onSearchTextChange(searchText) {
@@ -30,6 +31,7 @@ export default class FilterableProductsTable extends Component {
   }
 
   onInStockOnlyChange(inStockOnly) {
+    console.log(inStockOnly)
     this.setState({
       inStockOnly: inStockOnly
     })
@@ -38,10 +40,8 @@ export default class FilterableProductsTable extends Component {
   render() {
     return (
         <div>
-            <h3>{this.state.searchText}</h3>
-            <h4>{this.state.inStockOnly}</h4>
             <SearchBar onSearchTextChange={this.onSearchTextChange} onInStockOnlyChange={this.onInStockOnlyChange}/>
-            <ProductsTable items={products} />
+            <ProductsTable filter={this.state.searchText} inStockOnly={this.state.inStockOnly} items={products} />
         </div>
     );
   }

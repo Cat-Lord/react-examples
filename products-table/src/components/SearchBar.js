@@ -8,12 +8,12 @@ export default class SearchBar extends Component {
     this.handleOnlyInStockChange = this.handleOnlyInStockChange.bind(this);
   }
   
-  handleChange(event) {
-    this.props.handleSearchTextChange(event.target.value); 
+  handleSearchTextChange(event) {
+    this.props.onSearchTextChange(event.target.value); 
   }
 
   handleOnlyInStockChange(event) {
-    this.props.onInStockOnlyChange(event.target.value);
+    this.props.onInStockOnlyChange(event.target.checked);
   }
 
   render() {
