@@ -43,7 +43,7 @@ export default class ProductsTable extends Component {
     return (
         <table className="products-table">
           <tbody>
-            <tr>
+            <tr className="table-header">
               <th>Name</th>
               <th>Price</th>
             </tr>
