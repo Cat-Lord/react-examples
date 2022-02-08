@@ -16,7 +16,7 @@
 .filterable-products-table {
   padding: 11px;;
   background-color: #d1d2d3;
-  
+  min-width: 30vw;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
