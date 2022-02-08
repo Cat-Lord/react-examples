@@ -12,10 +12,35 @@ const products = [
 ];
 
 export default class FilterableProductsTable extends Component {
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+       searchText: '',
+       inStockOnly: false
+    }
+
+    this.onSearchTextChange = this.onSearchTextChange.bind(this);
+  }
+
+  onSearchTextChange(searchText) {
+    this.setState({
+      searchText: searchText
+    })
+  }
+
+  onInStockOnlyChange(inStockOnly) {
+    this.setState({
+      inStockOnly: inStockOnly
+    })
+  }
+  
   render() {
     return (
         <div>
-            <SearchBar />
+            <h3>{this.state.searchText}</h3>
+            <h4>{this.state.inStockOnly}</h4>
+            <SearchBar onSearchTextChange={this.onSearchTextChange} onInStockOnlyChange={this.onInStockOnlyChange}/>
             <ProductsTable items={products} />
         </div>
     );
