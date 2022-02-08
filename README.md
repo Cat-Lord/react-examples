@@ -17,3 +17,9 @@ this guide are roughly commented along the way.
 This is a part of *react-playground* but extracted as separate project for cleaner implementation available at [Thinking in React](https://reactjs.org/docs/thinking-in-react.html). This 
 one I tried to implement solely on my own (with the help of the instructions from the web site).
 
+#### frontend-example
+Playing around with axios and connecting to java spring server. I was also trying out <Suspense /> but I couldn't get it working. I tried simulating
+server delay.
+
+#### named-imports
+Trying out named-imports and playing around with different techniques of importing components
