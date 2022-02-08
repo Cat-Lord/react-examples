@@ -31,7 +31,6 @@ export default class FilterableProductsTable extends Component {
   }
 
   onInStockOnlyChange(inStockOnly) {
-    console.log(inStockOnly)
     this.setState({
       inStockOnly: inStockOnly
     })
@@ -39,7 +38,7 @@ export default class FilterableProductsTable extends Component {
   
   render() {
     return (
-        <div>
+        <div className="filterable-products-table ">
             <SearchBar onSearchTextChange={this.onSearchTextChange} onInStockOnlyChange={this.onInStockOnlyChange}/>
             <ProductsTable filter={this.state.searchText} inStockOnly={this.state.inStockOnly} items={products} />
         </div>

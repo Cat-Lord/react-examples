@@ -18,10 +18,12 @@ export default class SearchBar extends Component {
 
   render() {
     return (
-        <div>
+        <div className="search-bar" >
             <input type="text" placeholder="Search" onChange={this.handleSearchTextChange} />
-            <input type="checkbox" id="stocked-products" name="stocked-products" onChange={this.handleOnlyInStockChange}/>
-            <label htmlFor="stocked-products">Only show products in stock</label>
+            <div>
+              <input type="checkbox" id="stocked-products" name="stocked-products" onChange={this.handleOnlyInStockChange}/>
+              <label htmlFor="stocked-products">Only show products in stock</label>
+            </div>
         </div>
     );
   }

@@ -27,8 +27,10 @@ export default class ProductsTable extends Component {
     
     const table = Object.entries(map).map(
       ([category, products]) => {
-        return (
+        if (products.length === 0)
+          return null;
 
+        return (
           // To avoid "Warning: Each child in a list should have a unique "key" prop" 
           // we need to add key TO THE FRAGMENT itself.
           <React.Fragment key={category}>
@@ -39,8 +41,12 @@ export default class ProductsTable extends Component {
       });
 
     return (
-        <table>
+        <table className="products-table">
           <tbody>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+            </tr>
             { 
               table
             }
