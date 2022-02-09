@@ -1,17 +1,48 @@
 import React, { Component } from 'react';
 import Article from './Article';
-
-
+import Toolbar from './Toolbar';
+import { PageContext, PageSetup, Theme } from '../contexts/PageContext';
 /**
  * - Page has articles.
  * - Articles have
- *      - ArticleHeadings, Icon 
+ *      - ArticleHeading, Icon 
  *      - Content
  *      - Datetime
  */
 
-
 export default class Page extends Component {
+
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+      pageContext: PageContext,
+    }
+    
+    this.changeTheme = this.changeTheme.bind(this);
+  }
+  
+  changeTheme(isLightTheme) {
+    if (isLightTheme) {
+
+      this.setState(previousContext => ({
+
+        // copy and update old context with new one
+        pageContext : { 
+          ...previousContext.PageContext , 
+          theme: Theme.light
+        }
+      }));
+    }
+    else {
+      this.setState(previousContext => ({
+        pageContext : { 
+          ...previousContext.PageContext , 
+          theme: Theme.dark
+        }
+      }));
+    }
+  }
 
   render() {
     
@@ -33,11 +64,14 @@ export default class Page extends Component {
 
     return (
         <div>
+          <Toolbar onThemeChane={this.changeTheme} />
+          <PageContext.Provider value={this.state.pageContext} >
             <Article heading="H1" icon={icons[0]} content={contents[0]}/>
             <Article heading="H2" icon={icons[1]} content={contents[1]}/>
             <Article heading="H3" icon={icons[2]} content={contents[2]}/>
             <Article heading="H4" icon={icons[3]} content={contents[3]}/>
             <Article heading="H5" icon={icons[4]} content={contents[4]}/>
+          </PageContext.Provider>
         </div>
     );
   }

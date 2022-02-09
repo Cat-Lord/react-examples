@@ -40,7 +40,18 @@
 }
 
 .article {
-  max-width: 40vw;
+  max-width: 55vw;
+  margin-bottom: 11px;
+}
+
+.article-light {
+  background-color: darkgray;
+  color: #282c34;
+}
+
+.article-dark {
+  background-color: #282c34;
+  color: antiquewhite;
 }
 
 .heading-container {
