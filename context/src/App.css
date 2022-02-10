@@ -45,7 +45,7 @@
 }
 
 .article-light {
-  background-color: darkgray;
+  background-color: rgb(228, 227, 227);
   color: #282c34;
 }
 
@@ -64,4 +64,10 @@
 
 .article-content {
   text-align: justify;
+}
+
+.random-button {
+  width: 13px;
+  height: 17px;
+  border-radius: 25%;
 }

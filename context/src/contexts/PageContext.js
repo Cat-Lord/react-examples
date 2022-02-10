@@ -5,9 +5,10 @@ export const Theme = {
     light: "light"
 }
 
-export const PageSetup = { 
-    lang: "en",
-    theme: Theme.light
-}
-
-export const PageContext = React.createContext(PageSetup);
+export const PageContext = React.createContext(
+    // default value
+    { 
+        lang: "en",
+        theme: Theme.light
+    }
+);

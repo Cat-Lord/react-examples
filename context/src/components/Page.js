@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Article from './Article';
 import Toolbar from './Toolbar';
-import { PageContext, PageSetup, Theme } from '../contexts/PageContext';
+import { PageContext, Theme } from '../contexts/PageContext';
 /**
  * - Page has articles.
  * - Articles have
@@ -10,37 +10,52 @@ import { PageContext, PageSetup, Theme } from '../contexts/PageContext';
  *      - Datetime
  */
 
+/**
+ * This example is work-in-progress. Initial context and its changes are not 
+ * consistent and the context doesnt seem to have a 'starting' point
+ */
+
 export default class Page extends Component {
 
   constructor(props) {
     super(props)
   
     this.state = {
-      pageContext: PageContext,
+      pageContext: PageContext
     }
     
     this.changeTheme = this.changeTheme.bind(this);
   }
   
   changeTheme(isLightTheme) {
+    console.log(this.state)
+
     if (isLightTheme) {
-
-      this.setState(previousContext => ({
-
-        // copy and update old context with new one
-        pageContext : { 
-          ...previousContext.PageContext , 
-          theme: Theme.light
-        }
-      }));
-    }
-    else {
-      this.setState(previousContext => ({
-        pageContext : { 
-          ...previousContext.PageContext , 
+      this.setState(previousContext => {
+        console.log("Old (light) theme")
+        console.log(previousContext);
+        const currentTheme = ({ 
+          ...previousContext, 
           theme: Theme.dark
-        }
-      }));
+        });
+          console.log("Current:");
+          console.log(currentTheme);
+          return currentTheme;
+      });
+    }
+
+    else {
+      this.setState(previousContext => {
+          console.log("Old (light) theme")
+          console.log(previousContext);
+          const currentTheme = ({ 
+            ...previousContext, 
+            theme: Theme.dark
+          });
+          console.log("Current:");
+          console.log(currentTheme);
+          return currentTheme;
+      });
     }
   }
 
