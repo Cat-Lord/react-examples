@@ -2,7 +2,13 @@ import img1 from "./img/1.jpg";
 import img2 from "./img/2.jpg";
 import img3 from "./img/3.jpg";
 
-export default [
+interface Nebula {
+  imgPath: string,
+  title: string,
+  content: JSX.Element
+}
+
+export const infoText: Array<Nebula> = [
   {
     imgPath: img1,
     title: "Lagoon Nebula (Visible-light View)",
