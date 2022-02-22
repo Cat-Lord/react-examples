@@ -2,6 +2,10 @@
 ### Examples Repository
 This repository contains projects which are either an implementation of React tutorials or other projects based on react. Below are general descriptions of each project.
 
+Things to consider:
+- unDraw: Library with free-to-download pictures
+- Nivo: UI library for data graphical elements (grahs, charts, ...)
+- Tailwind css: Similar to bootstrap, more complex but also more unique
 
 #### tic-tac-toe
 Example game taken from [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html). There are two important files:
@@ -26,3 +30,8 @@ Trying out named-imports and playing around with different techniques of importi
 
 #### react-hooks-with-typescript
 In this project we take a look on how to create react project with typescript and implement a simple application which displays a carousel based on [React conference of 2018](https://github.com/ryanflorence/react-conf-2018). This carousel has built-in animated timer and play/pause, next and previous slide controls.
+
+#### Fishing evidence
+A full-fledged project using the (Java backend)[https://github.com/Cat-Lord/fishing-evidence]. I use 
+different technologies and will see how well each one fits. See README of fishing-evidence for more
+info.
