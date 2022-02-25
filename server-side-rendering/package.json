@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/index.js"
+    "start": "babel-node server/index.js"
   },
   "keywords": [],
   "author": "",
@@ -19,10 +19,12 @@
   "devDependencies": {
     "@babel/core": "^7.17.5",
     "@babel/node": "^7.16.8",
-    "babel-loader": "^8.2.3",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
+    "babel-loader": "^8.2.3",
     "ts-loader": "^9.2.6",
     "webpack": "^5.69.1",
     "webpack-cli": "^4.9.2",

@@ -1,4 +1,8 @@
-const express = require('express');
+// plain javascript
+// const express = require('express');
+
+// test es6 syntax within babel-node server
+import express from 'express'
 
 const app = new express();
 
