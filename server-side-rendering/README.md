@@ -1,3 +1,10 @@
+# Installation and start
+After cloning the repository, make sure to build the solution and run it like this:
+
+1. npm install
+2. npm run build
+3. npm start
+
 # Server side rendering with React
 This project follows a tutorial on Pluralsight called `Server Rendering React Components`. It will build up the application
 'from scratch' without using create-react-app.
