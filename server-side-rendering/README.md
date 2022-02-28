@@ -48,6 +48,44 @@ With react we need to ensure following properties of our application to stay ser
 
 All server-rendered components must work on client, it should run just like without server rendering.
 
+## Configuration
+The configuration of this project mostly followed the tutorial but I needed to find a way of configuring the typescript part of this project. I found [this starter repo](https://github.com/Microsoft/TypeScript-Babel-Starter) which has information about basic configuration and links to more focused examples (one of which is mentioned later in this file when setting up webpack).
+
+### Setting up Babel
+Babel can convert different types of source code into (usually) Javascript. We need to set it up in order to work with React - our goal is to convert React code into some Javascript (es6, es5, whatever we need).
+	{
+		"presets": [
+			"@babel/preset-env",
+			"@babel/preset-react",
+    	"@babel/preset-typescript"
+		]
+	}
+
+### Setting up webpack
+Now we need to configure webpack to use babel and to be able to build our solution into a bundle. For that we create `webpack.config.js` and there we just configure webpack to use babel and point it to the 'main' file on our client that is holding the React.renderDOM (for now it is the `client.tsx` file).
+
+After that we add a build script to our `package.json`. I found some good information in [this repo](https://github.com/a-tarasyuk/react-webpack-typescript-babel), which provides with example configuration for a project with react, typescript, babel and webpack. I followed it by adjusting my webpack config file. I also added a `tsconfig.json` (because I forgot previously).
+
+[For some reason](https://stackoverflow.com/questions/32070303/uncaught-referenceerror-react-is-not-defined) we also need to set the runtime option in the webpack config file. This is how the end module looks like:
+
+	module: {
+    rules: [{ 
+        test: /\.(ts|js)x?$/, 
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              "@babel/preset-env",
+              ["@babel/preset-react", {"runtime": "automatic"}],
+              "@babel/preset-typescript"
+            ]
+          }
+        },
+        exclude: /node_modules/ 
+      }
+		]
+  }	
+
 ### Creating React base component
 Now we need to create the base component (or components if we desire so) and place it inside a HTML page. The first step is to create the placeholding page - basic HTML with a div with a specific ID. This id will be targeted in our base react component.
 
@@ -82,3 +120,6 @@ Now we create an `<App />` component, where we (using React DOM) reference our c
 		<App />,                                // application component, we can split it if needed
 		document.querySelector("#container")    // place it inside the contaier in the index.html
 	);
+
+### Applying server rendering
+So far we implemented and tested the wepack and babel together with typescript. Now we need to ensure that react renders server-side. To achieve that we use `renderToString()` function from react-dom server and we use it inside the index.js file.
