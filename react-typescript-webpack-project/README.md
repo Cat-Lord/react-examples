@@ -40,8 +40,38 @@ Entry points:
 - `index.tsx`
 
 4. Create the run script
+  ```
   ...
   "scripts": {
     "start": "webpack serve --config webpack.config.js --open"
   },
   ...
+  ```
+
+5. Install additional packages and features
+
+- css compatibility: 
+  - npm i css-loader style-loader
+  - next we need to instruct webpack to use loaders for css files
+
+- images compatibility:
+  - create `declarations.d.ts` where we declare available modules. No need to install any extra loaders, we have support for images out of the box, only add these loaders to the webpack config.
+
+
+- production readiness
+  - install webpack-merge: npm i webpack-merge
+  - create webpack configurations with separate development and production properties
+  - use webpack-merge to ensure the correct environment in each of the modes (dev or prod)
+  - this step changes our webpack configuration quite a bit, so we create a webpack directory to keep our project clean
+  - and finally create/adjust `package.json` scripts to include dev and prod environments as variables
+
+```
+  ...
+  
+  "scripts": {
+    "start": "webpack serve --config webpack/webpack.config.js --env environment=dev",
+    "build": "webpack serve --config webpack/webpack.config.js --env environment=prod"
+  },
+
+  ...
+  ```

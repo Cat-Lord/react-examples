@@ -1,7 +1,14 @@
+import "./css/app.css"
+import catImage from './img/cat.jpg'
+
 export const App = () => {
   return (
     <div>
-      😍 React available ! 🥰
+      <div>
+        <p>😍 React available ! 🥰</p>
+        <small>Running in {process.env.NODE_ENV} mode !</small>
+      </div>
+      <img src={ catImage } alt="cat on leash" width="auto" height="300"/>
     </div>
   ); 
 }

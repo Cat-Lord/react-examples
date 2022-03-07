@@ -4,14 +4,14 @@ This repository contains projects which are either an implementation of React tu
 
 Things to consider:
 - unDraw: Library with free-to-download pictures
-- Nivo: UI library for data graphical elements (grahs, charts, ...)
+- Nivo: UI library for data graphical elements (graphs, charts, ...)
 - Tailwind css: Similar to bootstrap, more complex but also more unique
 
 #### tic-tac-toe
 Example game taken from [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html). There are two important files:
 
 - official\_index.js: Exact copy of the official code copied from the site
-- index.js: My own code written as an attempt to implement this game as an excercise following the tutorial. Working a little differently than the original.
+- index.js: My own code written as an attempt to implement this game as an exercise following the tutorial. Working a little differently than the original.
 
 #### react-playground
 Playground where I tested most of the React functionality available at [Hello World documentation](https://reactjs.org/docs/hello-world.html). Main concepts I took from 
@@ -35,3 +35,10 @@ In this project we take a look on how to create react project with typescript an
 A full-fledged project using the (Java backend)[https://github.com/Cat-Lord/fishing-evidence]. I use 
 different technologies and will see how well each one fits. See README of fishing-evidence for more
 info.
+
+#### react-typescript-webpack-project
+Ready-for-use basic example using:
+- react: Frontend UI tool.
+- typescript: Type-safe javascript.
+- babel: transpiler used to achieve backward compatibility.
+- webpack: Packing project files into single javascript (and compatible) bundle.
