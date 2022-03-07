@@ -1,12 +1,14 @@
 const webpack = require('webpack');
 const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 module.exports = {
   mode: 'development',
   devtool: 'cheap-module-source-map',
 
   devServer: {
-    port: 3001
+    port: 3001,
+    hot: true
   },
 
   // create a environment variable accessible from code
@@ -17,6 +19,8 @@ module.exports = {
 
     new webpack.DefinePlugin({
       'process.env.name': JSON.stringify('Kittie')
-    }) 
+    }),
+    
+    new ReactRefreshPlugin()
   ]
 }

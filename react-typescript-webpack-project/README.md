@@ -78,6 +78,16 @@ Entry points:
 
   - production build will generate necessary files placed in the build/ directory. We can run it with `npx serve` from inside the build directory. I've edited the build command to immediately start the server after successfully building the solution.
 
+### React "Fast refresh" (hot reload)
+Install plugin via `npm i --save-dev @pmmmwh/react-refresh-webpack-plugin react-refresh` and set 
+```
+devServer: {
+  ...
+  hot: true,
+}
+```
+This is everything required for this setup, but we can explore our options in the [official github repository](https://github.com/pmmmwh/react-refresh-webpack-plugin) is needed.
+
 
 [^1]: Running both the development and production builds and inspecting it using the browser tools we can see that the javascript bundle reads:<br>
 `Transferred 296.06 KB (1.23 MB size)` 🤔<br>
