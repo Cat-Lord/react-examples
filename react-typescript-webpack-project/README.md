@@ -58,7 +58,7 @@ Entry points:
   - create `declarations.d.ts` where we declare available modules. No need to install any extra loaders, we have support for images out of the box, only add these loaders to the webpack config.
 
 
-- production readiness
+- production readiness[^1]
   - install webpack-merge: npm i webpack-merge
   - create webpack configurations with separate development and production properties
   - use webpack-merge to ensure the correct environment in each of the modes (dev or prod)
@@ -70,8 +70,18 @@ Entry points:
   
   "scripts": {
     "start": "webpack serve --config webpack/webpack.config.js --env environment=dev",
-    "build": "webpack serve --config webpack/webpack.config.js --env environment=prod"
+    "build": "webpack --config webpack/webpack.config.js --env environment=prod"
   },
 
   ...
   ```
+
+  - production build will generate necessary files placed in the build/ directory. We can run it with `npx serve` from inside the build directory. I've edited the build command to immediately start the server after successfully building the solution.
+
+
+[^1]: Running both the development and production builds and inspecting it using the browser tools we can see that the javascript bundle reads:<br>
+`Transferred 296.06 KB (1.23 MB size)` 🤔<br>
+Running in production mode yields:<br>
+`Transferred 44 KB (132.63 KB size)` 😊<br>
+Using webpack chunk optimization we get this final result:<br>
+`Transferred 1.87 KB (2.76 KB size)` 🤯<br>

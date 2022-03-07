@@ -5,8 +5,8 @@ export const App = () => {
   return (
     <div>
       <div>
-        <p>😍 React available ! 🥰</p>
-        <small>Running in {process.env.NODE_ENV} mode !</small>
+        <p>😍 React available for { process.env.name }s ! 🥰</p>
+        <small>Running in { process.env.NODE_ENV } mode !</small>
       </div>
       <img src={ catImage } alt="cat on leash" width="auto" height="300"/>
     </div>

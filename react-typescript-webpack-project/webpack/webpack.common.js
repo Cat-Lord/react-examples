@@ -7,7 +7,7 @@ module.exports = {
   entry: path.resolve(__dirname, '..', './src/index.tsx'),
   output: { 
     path: path.resolve(__dirname, '..', './build'),
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
 
   // devtools are used to create mapping which helps with tracking the bundle to original 
@@ -47,9 +47,10 @@ module.exports = {
     ]
   },
 
-  devServer: {                // is serving from '/public' by default
-    open: true,               // open default browser when server starts
-    port: 3001
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 
   // handles also the <script ... /> tags inside the `index.html`
