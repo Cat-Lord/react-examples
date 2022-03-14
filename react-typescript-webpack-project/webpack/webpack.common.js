@@ -6,7 +6,7 @@ module.exports = ( env ) => {
   return {
     mode: 'development',
 
-    entry: path.resolve(__dirname, '..', './src/index.tsx'),
+    entry: path.resolve(__dirname, '..', './src/public/index.tsx'),
     output: { 
       path: path.resolve(__dirname, '..', './build'),
       filename: '[name].js'
@@ -52,7 +52,7 @@ module.exports = ( env ) => {
 
     // handles also the <script ... /> tags inside the `index.html`
     plugins: [ new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '..', './src/index.html')
+      template: path.resolve(__dirname, '..', './src/public/index.html')
     }) ]
   }
 }
