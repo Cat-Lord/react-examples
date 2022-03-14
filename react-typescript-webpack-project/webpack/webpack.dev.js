@@ -2,25 +2,39 @@ const webpack = require('webpack');
 const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
-module.exports = {
-  mode: 'development',
-  devtool: 'cheap-module-source-map',
+module.exports = ( env ) => {
+  
+  let isDebugMode = false;
+  if (env.debug != null)
+    isDebugMode = true;
 
-  devServer: {
-    port: 3001,
-    hot: true
-  },
+  return {
+    mode: 'development',
 
-  // create a environment variable accessible from code
-  plugins: [ 
-    new WebpackBundleAnalyzer({
-      openAnalyzer: false         // dont open it by default
-    }),
-
-    new webpack.DefinePlugin({
-      'process.env.name': JSON.stringify('Kittie')
-    }),
+    // devtools are used to create mapping which helps with tracking the bundle to original 
+    // source code so we dont get errors like 'error X in app.bungle.js on line 15125' but
+    // rather 'error in Comment.tsx on line 25'
+    devtool: 'cheap-module-source-map',
     
-    new ReactRefreshPlugin()
-  ]
+    devServer: {
+      port: 3001,
+      hot: true
+    },
+
+    // create a environment variable accessible from code
+    plugins: [ 
+      new WebpackBundleAnalyzer({
+
+        // pass in 'debug' environment variable to open bundle analysis
+        // only if the debug value is present
+        openAnalyzer: isDebugMode        
+      }),
+
+      new webpack.DefinePlugin({
+        'process.env.name': JSON.stringify('Kittie')
+      }),
+      
+      new ReactRefreshPlugin()
+    ]
+  }
 }

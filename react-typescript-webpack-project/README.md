@@ -95,3 +95,44 @@ Running in production mode yields:<br>
 `Transferred 44 KB (132.63 KB size)` 😊<br>
 Using webpack chunk optimization we get this final result:<br>
 `Transferred 1.87 KB (2.76 KB size)` 🤯<br>
+
+## Optional extra's
+These few extras are good when working with a team or provide additional but not essential tools:
+- ESlint: Analyzes code and searches for errors. Logical (infinite loop), syntactical, unused code, missing declarations, ...
+- Prettier: Automatic code formatter based on configuration definition (for example semicolons required, single quotes over double quotes, target ECMA script version set to ES6, ...).
+- copy-webpack-plugin: Used to copy static assets into the build folder.
+- webpack-bundle-analyzer: Cool visual representation of disk space occupation of every package in project, useful when minimizing build for production
+
+## End Notes
+To make it easier and more flexible I've rewritten webpack config files to obtain environment like this:
+
+`webpack.someConfig.js`:
+
+``` 
+module.exports = ( env ) => {
+  
+  return {
+    ...
+  }
+}
+```
+
+And when combining different builds:
+
+`webpack.config.js`:
+
+```
+module.exports = ( env ) => {
+  
+  ...
+  // pick the proper environment configuration and call
+  //  it as function to obtain the configuration object.
+  const configMode = require(`./webpack.${env.environment}.js`); 
+  const currentConfig = configMode(env);
+  
+  ...
+
+}
+```
+
+The advantage of this approach is that we can a provide and use various environment variables and program arguments. I configured the webpack-bundle-analyzer to be only run when a `debug` option is specified as an environment variable.
