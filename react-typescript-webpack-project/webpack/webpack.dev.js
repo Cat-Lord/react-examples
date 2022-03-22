@@ -4,9 +4,11 @@ const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 module.exports = ( env ) => {
   
-  let isDebugMode = false;
-  if (env.debug != null)
-    isDebugMode = true;
+  let analyzerModeValue;
+  if (env.debug == null)
+    analyzerModeValue = "disabled";
+  else
+    analyzerModeValue = "server";
 
   return {
     mode: 'development',
@@ -21,15 +23,15 @@ module.exports = ( env ) => {
       hot: true
     },
 
-    // create a environment variable accessible from code
     plugins: [ 
       new WebpackBundleAnalyzer({
 
         // pass in 'debug' environment variable to open bundle analysis
         // only if the debug value is present
-        openAnalyzer: isDebugMode        
+        analyzerMode: analyzerModeValue      
       }),
 
+      // create a environment variable accessible from code
       new webpack.DefinePlugin({
         'process.env.name': JSON.stringify('Kittie')
       }),
