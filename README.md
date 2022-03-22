@@ -1,6 +1,7 @@
 
 ### Examples Repository
 This repository contains projects which are either an implementation of React tutorials or other projects based on react. Below are general descriptions of each project.
+Within each directory there are also `package-lock.json` files which are supposed to be commited, but I opted not to because this is a demo repository and doesn't need to rely on exact dependencies, versions, etc.
 
 Things to consider:
 - unDraw: Library with free-to-download pictures
@@ -37,8 +38,8 @@ different technologies and will see how well each one fits. See README of fishin
 info.
 
 #### react-typescript-webpack-project
-Ready-for-use basic example using:
+**Ready-for-use** basic example using:
 - react: Frontend UI tool.
 - typescript: Type-safe javascript.
 - babel: transpiler used to achieve backward compatibility.
-- webpack: Packing project files into single javascript (and compatible) bundle.
+- webpack: Packing project files into single javascript (and compatible) bundle. Provides customizable production/development configurations with a few cool tools.

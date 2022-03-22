@@ -6,6 +6,9 @@
 .pnp.js
 **/package-lock.json
 
+# Not really necessary, contains run- and package-related information
+.vscode/
+
 # Vim
   # Swap
   [._]*.s[a-v][a-z]
