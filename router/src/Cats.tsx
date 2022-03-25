@@ -1,7 +1,5 @@
 export const Cats = () => {
   return (
-    <div>
-      List of cats.
-    </div>    
+    <h1>Cats are love</h1>
   );
 }

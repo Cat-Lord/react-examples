@@ -1,46 +1,120 @@
-# Getting Started with Create React App
+# React router
+In this project I play around with some react router. I followed the [official tutorial](https://reactrouter.com/docs/en/v6/getting-started/tutorial), so most of the notes here are just rephrased from there. 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Routing basics
+Routing is split into two parts:
+- routing that redirects to elements
+- Link that trigger redirection
 
-## Available Scripts
+Therefore we need to have an element that contains Links to other pages and an element that redirects based on the routes.
 
-In the project directory, you can run:
+> Redirection
+> ```
+> ReactDOM.render(
+>   <BrowserRouter>
+>     <Routes>
+>       <Route path="/" element={<App />}/>
+>       <Route path="cats" element={<Cats />}/>
+>       <Route path="shelters" element={<Shelters />}/>
+>     </Routes>
+>   </BrowserRouter>,
+>   document.getElementById("root")
+> );
+> ```
 
-### `npm start`
+> Links
+> ```
+> export const Navigation = () => {
+>   return (
+>     <React.Fragment>
+>       <h2>Nav</h2>
+>       <nav
+>         style={{
+>           borderBottom: "solid 1px",
+>           paddingBottom: "1rem",
+>       }}
+>       >
+>         <Link to="/cats">The beloved Cats</Link> |{" "}
+>         <Link to="/shelters">Cat Shelters to visit</Link>
+>       </nav>
+>     </React.Fragment>
+>   );
+> }
+> ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Nesting the routes is also possible and this way we achieve a nice "redirection" effect here paths get appended. The level of nesting is arbitrary and paths get appended along the way. We can have for example three levels and our final path could look like this: `/shelters/funding/about`.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+To allow correct rendering of such nested elements one should ensure that the parent element contains a simple `<Outlet />` tag. This tag represents a parent so that react router can render the child element inside of it.
 
-### `npm test`
+In case we want to navigate to dynamic content, we can use string interpolation and create Links as needed:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+  ...
+  <Link 
+    to = { `cats/${catsList.id}` }
+  >
+  ...
+```
 
-### `npm run build`
+But we have to be careful - when a page is missing, we would get an error. To avoid that, we can specify a route that navigates to an error page in case we didn't find a page.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+  ...
+    <Routes>
+      <Route path="/" element={<App />}>
+      <Route path="cats" element={<Cats />}/>
+      <Route path="shelters" element={<Shelters />}/>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+      <Route path='*' element={<NavigationError />} />    // this shows the error
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    </Route>
+  ...
+```
 
-### `npm run eject`
+## Parameters
+When handling parameters we have a `useParams()` hook available as well as other neat features.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### useParams
+With this hook we obtain the URL parameters. We can simply use the result as an object with parameters as values. Simply having a url like `localhost:3000/cat/521` and expecting the number 521 to be represented as `catId` we can do:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+export function CatComponent() {
+  const params = useParams();
+  console.log(`Cat ID is: ${params.catId}`)
+  ...
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### useSearchParams
+This hooks allows us to handle parameters with values (for example `?query=My%20Cat`). We can use it like `useState` hook and use arbitrary parameters as we need.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+...
+  const [params, setParams] = useSearchParams();
+  params.get('query')                   // getting the parameter value
+  setParams({'query': 'cats are love})  //  setting of parameters
+...
+```
 
-## Learn More
+Navigation resets the parameters with routing. To keep this information we can use `useLocation` hook that will give us the search parameters back if needed. Location has various information about the URL content. So when navigating away we can re-set the search parameters.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+> Location Example:
+> ```
+> {
+>   pathname: "/shelters",
+>   search: "?filter=sa",
+>   hash: "",
+>   state: null,
+>   key: "ae4cz2j"
+> }
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+export const QueryNavLink = (props: NavLinkProps & React.RefAttributes<HTMLAnchorElement>) : JSX.Element =>  {
+  const { to, ...otherProps } = props
+  
+  const location = useLocation();   // get the search parameters
+
+  return <NavLink to={to + location.search} { ... otherProps } />
+}
+```

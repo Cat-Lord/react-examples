@@ -43,3 +43,6 @@ info.
 - typescript: Type-safe javascript.
 - babel: transpiler used to achieve backward compatibility.
 - webpack: Packing project files into single javascript (and compatible) bundle. Provides customizable production/development configurations with a few cool tools.
+
+#### Router
+This project demonstrates the use of react router with the use of typescript.
