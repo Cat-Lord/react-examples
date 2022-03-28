@@ -18,6 +18,7 @@ Types define how queries should or must be structured. Data types are simple:
 - String (utf-8)
 - Boolean
 - ID (unique identifier)
+- Arrays
 
 Fields are optional by default and appending them with '!' makes them required. Types are therefore structured like this:
 
@@ -25,7 +26,8 @@ Fields are optional by default and appending them with '!' makes them required. 
 type Cat {
   id: ID!
   born: String
-  neutered: Boolean
+  neutered: Boolean,
+  kittens: [Cat]
 }
 ```
 
@@ -40,6 +42,23 @@ Query then contains required and/or optional fields when using a type:
   }
 }
 ```
+
+### Field directives
+To be able to change the fields in a more reliable way we have a few directives available. This process is supplied with directives that resemble java annotations.
+
+- @includes(if: Boolean!)     - include this field if the boolean value is true.
+- @skip(if:Boolean!)          - exact opposite of include: if the value is true, skip it and **don't** include it. Good for field where is an access required.
+- @deprecated(reason:String)  - 
+
+It is possible to define our custom directives.
+
+Usage example:
+
+type {
+  ...
+  tracks: String @deprecated(reason: "Too many sessions don't fit into single track, use tag instead")
+  ...
+}
 
 ## Arguments
 Useful for combining fetch operations in one query. Here we can see the `issues` and `comments` fields with argument `last` and its different values.
@@ -198,4 +217,30 @@ Creating and handling multiple request and their results in a single batch.
 GraphQL enables clients to fetch data via queries. These queries are parsed and executed on the GraphQL server. The communication between GraphQL server and a database (or multiple databases).
 Popular solution is for example Prisma which supports SQL as well as NoSQL databases [^1].
 
-[^1] Note that Prisma is a persistance layer ORM technology.
+[^1]: Note that Prisma is a persistance layer ORM technology.
+
+# Apollo
+
+## Apollo Server
+On start we get the default apollo playground. This is in-browser IDE for Apollo. Here we can see the schema and run GraphQL queries. We even get autocomplete and documentation through the automatic process of introspection (informing the IDE about our schema and providing it with definitions).
+
+We are not limited to this Apollo IDE client, we can use simple HTTP POST requests to obtain any information we need[^2]. For example specifying body like this:
+
+```
+{
+  __schema {
+    types {
+      name
+    }
+  }
+}
+```
+
+we get a list of our Query and Session type and others.
+
+[^2]: Using HTTP tools like Postman we have support for GraphQL query requests out of the box. We might need to [tweak our settings](https://www.contentful.com/blog/2021/01/14/GraphQL-via-HTTP-in-five-ways) or requests when using different tools.
+
+## Implementing Resolvers
+For our gql definitions we need to create and maintain a **resolver map** which maps types to fields and tells the type how to find the field.
+
+# Data sources

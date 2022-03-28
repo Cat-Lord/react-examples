@@ -1,6 +1,6 @@
 # Examples Repository
 This repository contains projects which are either an implementation of React tutorials or other projects based on react. Below are general descriptions of each project.
-Within each directory there are also `package-lock.json` files which are supposed to be commited, but I opted not to because this is a demo repository and doesn't need to rely on exact dependencies, versions, etc.
+Within each directory there are also `package-lock.json` files which are supposed to be committed, but I opted not to because this is a demo repository and doesn't need to rely on exact dependencies, versions, etc.
 
 Things to consider:
 - unDraw: Library with free-to-download pictures
@@ -48,3 +48,8 @@ This project demonstrates the use of react router with the use of typescript.
 
 ## Apollo-GraphQL
 Basic information about GraphQL in README with a demo using Apollo and GraphQL in code (I tested the GraphQL client in the [github explorer](https://docs.github.com/en/graphql/overview/explorer)).
+Using:
+- Apollo Server
+- GraphQL
+- Typescript
+- No project template (everything done 'by hand')
