@@ -9,43 +9,61 @@ In order to customize the TS behaviour we need to create a _tsconfig.json_ file.
 
 ## Types
 Using TS variable types in code is either implicit or explicit.
-  let num = 12;
+  
+  `let num = 12;`
+
 assigns the variable implicit 'number' type. Assigning for example string '124' would now result
 in an error. We can opt out of the strong-typing by assigning the variable an 'any' type:
-  let num:any = 12;
+
+```ts
+  let num: any = 12;
   num = 'this will work no problem';
 
   let anyVar; // this variable will ALSO get the 'any' type, since we didn't assign any value, neither a type
+```
 
-It is considered reduntant to add a type to a variable with assigned value.
+It is considered redundant to add a type to a variable with assigned value.
+
+```ts
   const num: number = 23;   // this is just an overkill
   const num2 = 69;    // this is okay
+```
 
 Arrays can also have a specific type defined as array of that type:
-  const nums: number[];
+
+```ts
+  const arr: number[];
   arr.push(1);
   arr.push(6969);
   arr.push("meow");     // error !  
+```
 
 ## Functions
 Annotating function is possible by specifying the arguments and return value
 
+```ts
   function pow(a: number, b: number): string {
     return Math.pow(a, b).toString();
   }
+```
 
 Or for example function without return value:
+
+```ts
   function printResult(result: string): void {
     console.log(result)
   }
-
+```
 
 ## Objects and custom types
 We can create and assign custom types. Types can have any value.
+
+```ts
   type FontWeight = "bold" | italic | 600;
   let font: FontWeight = "bold";
   font = 600;
   font = 'meow';    // error !
+```
 
 ### Tuples
 
@@ -61,13 +79,14 @@ Creating an empty variable will throw an error, the array needs to be initialize
 We can solve this either by initializing it (obviously) or by defining the items in the
 array as optional. Optional can be also for example function arguments as well.
 
-  type MyList = [string?, number?, boolean?]  // these types in the list are all optional
+  type MyList = [string?, number?, boolean?]  // these types in the list are all optional, see below
   const myArr: MyList =  [];    // a-ok !
 
 ### Generics
 
 Generics, used like in Java.
 
+```ts
   class List<T> {
     constructor(public value: T) {
       // ...
@@ -76,6 +95,7 @@ Generics, used like in Java.
 
   const stringList: List<string>;
   const numList = new List(69);    // generic is automatically assigned as 'number'
+```
 
 Notice, that the value in the constructor is *public*. This is TS specific and will result in an 
 _value_ property assigned to the list as public member. Private members on the other hand are not
@@ -86,16 +106,137 @@ Just an icing on the cake: TS provides automatic documentation for such classes.
 ### Objects
 
 There is a more flexible way of defining the structure of an object. 
+```ts
   interface Person {
     first: string;
     last: string;
   }
+```
 
 Any variable of type 'Person' must have first and last variables of type string. This type can be 
 used anywhere else, for example return statement, function parameters, etc.
 To be less restrictive, we can specify optional arguments of an interface:
+
+```ts
   interface LessStrict {
     num: number;
     label: string;
     [key: string] : any;      // any additional property, functions, strings, booleans, etc.
   }
+```
+
+## Optionality
+We can infer value and its argument existence using operators. In the definition we use:
+- `?`: value can be null
+- `!`: value will never be null
+  
+Example:
+
+```ts
+  type obj = {
+    myVar: number;    // <- must be present, can be `undefined`
+    can?: String;     // <- this property can be omitted, we can't take its presence for granted
+  }
+```
+
+If we are dealing with an optional value and we know that is will always be defined even though it is annotated with `?`, we can use it with the `!`. See example:
+
+```ts
+  type obj = {
+    title: String;
+    date: Date;
+    description?: String;
+  }
+
+  // we know that 'description' will always be created and available because of DataStore implementation
+  const opt : obj = DataStore.get();
+
+  obj.description.toLowerCase();    // ERROR - possibly null (even though we know it's not going to be)
+
+  obj.description!.toLowerCase();   // OK - here we are telling that it is optional, but we know it IS NOT null
+```
+
+Exclamation mark has one special meaning - if used twice it ensures that the result is a boolean value. Result is false if the value is null, undefined or 0, otherwise true. It is a utility shortcut for a check similar to `if (value == null || value == undefined) return false; else return true;`.
+
+```ts
+  console.log(!"cat")   // --> false
+
+  console.log(!!"cat")  // --> true
+
+  console.log(!!null)   // --> false
+```
+
+## Extending definitions
+We can use the `&` operator to combine definitions together if we need to.
+
+```ts
+  type DefaultConfig = {
+    url: String;
+  }
+
+  type Server = {
+    // extend default config with a 'port' member of type number and optional hasTTL boolean
+    extendedConfig: DefaultConfig & { port: number; hasSSL?: Boolean };
+  }
+```
+
+# Using Typescript effectively with dependencies
+When we use typescript we can often run into a need to separate arguments from third-party libraries into constant objects, function calls, etc., when we need a custom configuration. For example our dependency can provide us with types for a init function. We can look up the definition and somehow implement it, but it would be troublesome and error-prone.
+
+> Below we see a usage, but **typescript would complain** that it is not suitable for the init function.
+
+```js
+  import { init } from "third-party-library";
+
+  init(defaultSettings);
+
+  const defaultSettings = {
+    open: true,
+    port: 6969,
+    name: "meow-town",
+  };
+```
+
+This is because port is of type 'int' and not of specific type how the `init` method might require. We can 'hack' the solution by creating default setting as const:
+
+```ts
+  const defaultSettings = {
+    open: true,
+    port: 6969,
+    name: "meow-town",
+  } as const;
+```
+
+This would resolve the typescript error and variables like 'port' would be of type '6969' (type got more specific). This works, but adding a dummy variable which doesn't exist for the init method doesn't result in a error. This could be difficult to track and we would want to know implement the specific type for the init method. This is easily achieved like this:
+
+```ts
+  // import types for the third party libraries
+  import ThirdPartyLibrary from 'third-party-library';
+
+  const defaultSettings = {
+    open: true,
+    port: 6969,
+    name: "meow-town",
+  } as Parameters<typeof ThirdPartyLibrary.init>[0];  // be careful, Parameters returns an array of parameters ! 
+```
+
+This looks like a general and perfect approach, although we must be careful to implement correct parameter:
+
+```ts
+  import TPL from 'third-party-library';
+
+  // accepts string, configuration object and number
+  TPL.create(
+    "sample-name",
+    defaultConfig,
+    1234
+  );
+
+  const defaultConfig = {
+    ...
+  } as Parameters<typeof TPL.create>[1];  // implement second argument, configuration !
+```
+
+### Reference
+There are other handy utilities like `Parameters<>` for example `ConstructorParameters`, etc. We can find them here in the [typescript documentation](https://www.typescriptlang.org/docs/handbook/utility-types.html);
+

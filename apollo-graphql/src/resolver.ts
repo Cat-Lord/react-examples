@@ -1,6 +1,5 @@
 // import sessionsData from '../data/sessions.json';
 
-import { Context } from "apollo-server-core";
 
 
 // this syntax creates a 'sessionData' object and adds

@@ -22,7 +22,7 @@ Types define how queries should or must be structured. Data types are simple:
 
 Fields are optional by default and appending them with '!' makes them required. Types are therefore structured like this:
 
-```
+```ts
 type Cat {
   id: ID!
   born: String
@@ -33,7 +33,7 @@ type Cat {
 
 Query then contains required and/or optional fields when using a type:
 
-```
+```graphql
 {
   query {
     viewer {
@@ -63,7 +63,7 @@ type {
 ## Arguments
 Useful for combining fetch operations in one query. Here we can see the `issues` and `comments` fields with argument `last` and its different values.
 
-```
+```graphql
 query { 
   viewer {
 		issues (last: 1) {
@@ -82,13 +82,13 @@ query {
 ## Alias
 Renaming field results to different name which enables re-fetching it with different arguments. The following query wants to use the `comments` field with different arguments which results in an error. Notice that errors start with triple " symbol.
 
-```
+```graphql
 query { 
   viewer {
 		issues (last: 1) {
       nodes {
 
-        """ Field 'comments' has an argument conflict: {first:\"5\"} or {last:\"5\"}?
+        """ Field 'comments' has an argument conflict: {first:\"5\"} or {last:\"5\"}?"""
         comments (first: 5) {
           nodes {
             createdAt,
@@ -110,7 +110,7 @@ query {
 
 Aliasing a field is done by prepending it with alias and column symbol:
 
-```
+```graphql
   firstComments: comments (first: 5) {
     ...
   }
@@ -119,7 +119,7 @@ Aliasing a field is done by prepending it with alias and column symbol:
 ## Fragments
 Reusable units in GraphQL query (analogy to functions). Usage is through a triple-dot operator `...NameOfFragment`.
 
-```
+```graphql
 {
   viewer {
     repositories(first:3) {
@@ -142,7 +142,7 @@ fragment Repos on RepositoryConnection {
 ## Operations
 Queries don't have to have a name or can have only `query` name. These examples are valid and identical.
 
-```
+```graphql
 query {
   ...
 }
@@ -154,7 +154,7 @@ query {
 
 To be more descriptive we can name our queries like this:
 
-```
+```graphql
 query UsersWithRepositories {
 
 }
@@ -163,7 +163,7 @@ query UsersWithRepositories {
 ## Variables
 Dynamic content is achieved via variables passed into query definitions. They follow similar definition as type fields.
 
-```
+```graphql
 query UserLockedRepositories($isLocked: Boolean) {
   ...
     repositories(first: 5, isLocked: $isLocked)
@@ -174,7 +174,7 @@ query UserLockedRepositories($isLocked: Boolean) {
 ## Mutations
 Mutations are sort of a special type of queries that assume side-effects when run. While queries run in parallel, mutations on the other hand run in sequence.
 
-```
+```graphql
   """ Change the status of user to a new (not-null) status
   """ with the type defined defined in github API
   mutation changeUserStatus($input:ChangeUserStatusInput) {
@@ -226,7 +226,7 @@ On start we get the default apollo playground. This is in-browser IDE for Apollo
 
 We are not limited to this Apollo IDE client, we can use simple HTTP POST requests to obtain any information we need[^2]. For example specifying body like this:
 
-```
+```graphql
 {
   __schema {
     types {
@@ -244,3 +244,6 @@ we get a list of our Query and Session type and others.
 For our gql definitions we need to create and maintain a **resolver map** which maps types to fields and tells the type how to find the field.
 
 # Data sources
+
+-- TODO dopisat tuto cast
+-- TODO 3: FilterById (implementovat a pokracovat)

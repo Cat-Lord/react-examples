@@ -103,7 +103,8 @@ src/public/build/
 ```
 
 Generated HTML:
-```
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,6 +128,7 @@ Generated HTML:
 ### Creating React base component
 Now we need to create the base component (or components if we desire so) and place it inside a HTML page. The first step is to create the placeholder page - basic HTML with a div with a specific ID. This id will be targeted in our base react component.
 
+```html
 	<!DOCTYPE html>
 	<html lang="en">
 	<head>
@@ -141,9 +143,11 @@ Now we need to create the base component (or components if we desire so) and pla
 		</div>
 	</body>
 	</html>
+```
 
 Now we create an `<App />` component, where we (using React DOM) reference our container and place our app there.
 
+```jsx
 	import ReactDOM from 'react-dom';
 
 	export function App() {
@@ -158,6 +162,7 @@ Now we create an `<App />` component, where we (using React DOM) reference our c
 		<App />,                                // application component, we can split it if needed
 		document.querySelector("#container")    // place it inside the container in the index.html
 	);
+```
 
 ### Applying server rendering
 So far we implemented and tested the webpack and babel together with typescript. Now we need to ensure that react renders server-side. To achieve that we use `renderToString()` function from react-dom server and we use it inside the index.js file.

@@ -40,7 +40,8 @@ Entry points:
 - `index.tsx`
 
 4. Create the run script
-  ```
+  
+  ```json
   ...
   "scripts": {
     "start": "webpack serve --config webpack.config.js --open"
@@ -65,7 +66,7 @@ Entry points:
   - this step changes our webpack configuration quite a bit, so we create a webpack directory to keep our project clean
   - and finally create/adjust `package.json` scripts to include dev and prod environments as variables
 
-```
+```json
   ...
   
   "scripts": {
@@ -80,11 +81,12 @@ Entry points:
 
 ### React "Fast refresh" (hot reload)
 Install plugin via `npm i --save-dev @pmmmwh/react-refresh-webpack-plugin react-refresh` and set 
-```
-devServer: {
-  ...
-  hot: true,
-}
+
+```js
+  devServer: {
+    ...
+    hot: true,
+  }
 ```
 This is everything required for this setup, but we can explore our options in the [official github repository](https://github.com/pmmmwh/react-refresh-webpack-plugin) is needed.
 
@@ -108,31 +110,31 @@ To make it easier and more flexible I've rewritten webpack config files to obtai
 
 `webpack.someConfig.js`:
 
-``` 
-module.exports = ( env ) => {
-  
-  return {
-    ...
+```js
+  module.exports = ( env ) => {
+    
+    return {
+      ...
+    }
   }
-}
 ```
 
 And when combining different builds:
 
 `webpack.config.js`:
 
-```
-module.exports = ( env ) => {
-  
-  ...
-  // pick the proper environment configuration and call
-  //  it as function to obtain the configuration object.
-  const configMode = require(`./webpack.${env.environment}.js`); 
-  const currentConfig = configMode(env);
-  
-  ...
+```js
+  module.exports = ( env ) => {
+    
+    ...
+    // pick the proper environment configuration and call
+    //  it as function to obtain the configuration object.
+    const configMode = require(`./webpack.${env.environment}.js`); 
+    const currentConfig = configMode(env);
+    
+    ...
 
-}
+  }
 ```
 
 The advantage of this approach is that we can a provide and use various environment variables and program arguments. I configured the webpack-bundle-analyzer to be only run when a `debug` option is specified as an environment variable.

@@ -9,7 +9,7 @@ Routing is split into two parts:
 Therefore we need to have an element that contains Links to other pages and an element that redirects based on the routes.
 
 > Redirection
-> ```
+> ```jsx
 > ReactDOM.render(
 >   <BrowserRouter>
 >     <Routes>
@@ -23,7 +23,7 @@ Therefore we need to have an element that contains Links to other pages and an e
 > ```
 
 > Links
-> ```
+> ```jsx
 > export const Navigation = () => {
 >   return (
 >     <React.Fragment>
@@ -48,7 +48,7 @@ To allow correct rendering of such nested elements one should ensure that the pa
 
 In case we want to navigate to dynamic content, we can use string interpolation and create Links as needed:
 
-```
+```jsx
   ...
   <Link 
     to = { `cats/${catsList.id}` }
@@ -58,7 +58,7 @@ In case we want to navigate to dynamic content, we can use string interpolation 
 
 But we have to be careful - when a page is missing, we would get an error. To avoid that, we can specify a route that navigates to an error page in case we didn't find a page.
 
-```
+```jsx
   ...
     <Routes>
       <Route path="/" element={<App />}>
@@ -77,7 +77,7 @@ When handling parameters we have a `useParams()` hook available as well as other
 ### useParams
 With this hook we obtain the URL parameters. We can simply use the result as an object with parameters as values. Simply having a url like `localhost:3000/cat/521` and expecting the number 521 to be represented as `catId` we can do:
 
-```
+```js
 export function CatComponent() {
   const params = useParams();
   console.log(`Cat ID is: ${params.catId}`)
@@ -88,18 +88,18 @@ export function CatComponent() {
 ### useSearchParams
 This hooks allows us to handle parameters with values (for example `?query=My%20Cat`). We can use it like `useState` hook and use arbitrary parameters as we need.
 
-```
+```jsx
 ...
   const [params, setParams] = useSearchParams();
   params.get('query')                   // getting the parameter value
-  setParams({'query': 'cats are love})  //  setting of parameters
+  setParams({'query': 'cats are love'})  //  setting of parameters
 ...
 ```
 
 Navigation resets the parameters with routing. To keep this information we can use `useLocation` hook that will give us the search parameters back if needed. Location has various information about the URL content. So when navigating away we can re-set the search parameters.
 
 > Location Example:
-> ```
+> ```js
 > {
 >   pathname: "/shelters",
 >   search: "?filter=sa",
@@ -109,12 +109,12 @@ Navigation resets the parameters with routing. To keep this information we can u
 > }
 ```
 
-```
-export const QueryNavLink = (props: NavLinkProps & React.RefAttributes<HTMLAnchorElement>) : JSX.Element =>  {
-  const { to, ...otherProps } = props
-  
-  const location = useLocation();   // get the search parameters
+```tsx
+  export const QueryNavLink = (props: NavLinkProps & React.RefAttributes<HTMLAnchorElement>) : JSX.Element =>  {
+    const { to, ...otherProps } = props
+    
+    const location = useLocation();   // get the search parameters
 
-  return <NavLink to={to + location.search} { ... otherProps } />
-}
+    return <NavLink to={to + location.search} { ... otherProps } />
+  }
 ```
