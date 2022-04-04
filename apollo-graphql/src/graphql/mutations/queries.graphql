@@ -1,0 +1,29 @@
+
+query SessionBasic {
+  sessions {
+    id
+    title
+    description
+    startsAt
+    room
+  }
+}
+
+query SessionFull {
+  sessions {
+    id
+    title
+    description
+    startsAt
+    room
+    endsAt
+    day
+    format
+    track
+    level
+    speakers {
+      id
+      name
+    }
+  }
+}

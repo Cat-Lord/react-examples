@@ -166,6 +166,54 @@ Exclamation mark has one special meaning - if used twice it ensures that the res
   console.log(!!null)   // --> false
 ```
 
+### Optional Chaining
+If we know a value is optional we often get into trouble of determining if it is available. Different mechanisms can be used but the principle can be seen in the following example:
+
+```ts
+  // notice that the middle name can be optional
+  type Name = {
+    first: String;
+    middle?: String;
+    last: String;
+  }
+
+  // notice that 'name' is optional
+  type User = {
+    id: String;
+    name?: Name;
+    birthDate: Date;
+
+  }
+
+  const user: User = DataSource.fetchUser();
+
+  if (user === null  ||  user === undefined) {
+    ... // return
+  }
+
+  if (user.name === null  ||  user.name === undefined) {
+    ... // return
+  }
+
+  if (user.name.middle === null  ||  user.name.middle === undefined) {
+    ... // return
+  }
+
+  // use the middle name finally !
+  console.log(user.name.middle);
+```
+
+Typescript optional chaining allows us to simplify the logic so that we can evaluate errors about non-existent values to undefined by default:
+
+```ts
+  // using the types from previous example
+  const user: User = DataSource.fetchUser();
+
+  // evaluate to middle name or undefined if an error occurred !
+  console.log(user?.name?.middle);
+
+```
+
 ## Extending definitions
 We can use the `&` operator to combine definitions together if we need to.
 

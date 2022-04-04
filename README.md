@@ -53,3 +53,10 @@ Using:
 - GraphQL
 - Typescript
 - No project template (everything done 'by hand')
+
+## typescript-playground
+Project containing as little configuration as possible. Used for testing typescript related syntax, features and others. `tsconfig.json` has default configuration.
+
+Using:
+- nodemon: fast reload
+- ts-node: nodejs server with typescript

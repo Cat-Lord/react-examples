@@ -88,7 +88,7 @@ query {
 		issues (last: 1) {
       nodes {
 
-        """ Field 'comments' has an argument conflict: {first:\"5\"} or {last:\"5\"}?"""
+        """ Field 'comments' has an argument conflict: {first:\"5\"} or {last:\"5\"}? """
         comments (first: 5) {
           nodes {
             createdAt,
@@ -175,11 +175,11 @@ query UserLockedRepositories($isLocked: Boolean) {
 Mutations are sort of a special type of queries that assume side-effects when run. While queries run in parallel, mutations on the other hand run in sequence.
 
 ```graphql
-  """ Change the status of user to a new (not-null) status
-  """ with the type defined defined in github API
+  """ Change the status of user to a new (not-null) status """
+  """ with the type defined defined in github API """
   mutation changeUserStatus($input:ChangeUserStatusInput) {
     changeUserStatus(input: $input) {
-      """ Change only these field we define here
+      """ Change only these field we define here """
       clientMutationId
       status{
         message
@@ -187,6 +187,49 @@ Mutations are sort of a special type of queries that assume side-effects when ru
     }
   }
 ```
+
+# GraphQL with Typescript
+To use typescript effectively with our custom GraphQL types, we have to have a way of converting GraphQL schemas to typescript types and interfaces. To do this we can use GraphQL code-generator.
+
+After installation i ran into a weird problem: Tutorial suggests that I run `npm run graphql-codegen init` but I have no such script in my `package.json` (which NPM also complains about). So therefore i ran `./node_modules/.bin/graphql-codegen init` and continued without issues.
+
+After this I also installed a [typescript plugin for grahpql-apollo & react](https://www.graphql-code-generator.com/plugins/typescript-react-apollo). It will generate React hooks based on our configuration.
+
+Now we can create files to hold our queries, mutations, fragments and so on. We name these files `file.grapqhl` (where 'file' is our own name, for example 'mutations') to get nice syntax highlighting. It's otherwise not necessary to call our file anything else.
+
+Now we use GraphQL code generator to generate our file. It will take all our files inside the directory we specified when doing the previous `... graphql-codegen init` command and spit out typescript react components. I specified the generating command as `ts:gen`. I created sample queries for `sessions` with some attributes (labeled `SessionBasic`) and a query with all attributes (labeled `SessionFull`). We can take a look at a sample of these generated files:
+
+```tsx
+  ...
+
+  export type Session = {
+    __typename?: 'Session';
+    day?: Maybe<Scalars['String']>;
+    description?: Maybe<Scalars['String']>;
+    endsAt?: Maybe<Scalars['String']>;
+    format?: Maybe<Scalars['String']>;
+    id: Scalars['ID'];
+    level?: Maybe<Scalars['String']>;
+    room?: Maybe<Scalars['String']>;
+    speakers?: Maybe<Array<Maybe<Speaker>>>;
+    startsAt?: Maybe<Scalars['String']>;
+    title?: Maybe<Scalars['String']>;
+    /** @deprecated Too many sessions don't fit into single track, use tag instead */
+    track?: Maybe<Scalars['String']>;
+  };
+  ...
+
+  export function useSessionBasicQuery(...) { ... }
+  export function useSessionBasicLazyQuery(...) { ... }
+
+  ...
+  export function useSessionFullQuery(...) { ... }
+  export function useSessionFullLazyQuery(...) { ... }
+```
+
+Above is a snippet of the generated file. Typescript types were generated as well as hooks for the particular queries. Adding more queries, mutations, etc., we would just re-run the generation to get up-to-date types.
+
+Note that there is also information about our `@deprecated` field directive.
 
 # GraphQL Server
 GraphQL server receives the query and fetches the results which it handles back to the client. In this place the developer designs and implements GraphQL schema and API. Popular options are:
@@ -247,3 +290,7 @@ For our gql definitions we need to create and maintain a **resolver map** which 
 
 -- TODO dopisat tuto cast
 -- TODO 3: FilterById (implementovat a pokracovat)
+
+==
+-- 5:22 https://www.youtube.com/watch?v=I6ypD7qv3Z8
+-- zopakovat si pripadne reset hesla

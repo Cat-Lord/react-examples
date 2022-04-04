@@ -1,0 +1,21 @@
+{
+  "name": "typescript-playground",
+  "version": "1.0.0",
+  "description": "Playground for testing typescript features",
+  "main": "index.ts",
+  "scripts": {
+    "start": "nodemon src/index.ts"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "Cat-Lord",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.7.0"
+  }
+}
