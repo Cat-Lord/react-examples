@@ -290,3 +290,7 @@ This looks like a general and perfect approach, although we must be careful to i
 ### Reference
 There are other handy utilities like `Parameters<>` for example `ConstructorParameters`, etc. We can find them here in the [typescript documentation](https://www.typescriptlang.org/docs/handbook/utility-types.html);
 
+#### VS Code Detail
+When using Typescript in VS Code sometimes the auto-completion or other TS features can freeze. We solve this by restarting the TS Server. First we need to be in a `.js`, `.ts` or `.tsx` file and open the command palette. Now we must find and select the option `Restart TS server` and we are good to go.
+
+For more serious problems we can also find and use `Developer: Reload Window`.

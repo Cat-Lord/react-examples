@@ -10,7 +10,10 @@ GraphQL has its own query language which resembles JSON without commas (see stru
 GraphQL Clients:
 - Apollo
 - Relay (facebook & only for react)
-  
+
+### **TypeGraphQL**
+As a side note there is TypeGraphQL which supports Typescript together with GraphQL. TypeGraphQL comes with enhancements to traditional GraphQL mostly in decorator fashion. More on that on [their main page](https://typegraphql.com/docs/introduction.html).
+
 ## Fields and Types
 Types define how queries should or must be structured. Data types are simple:
 - Int (32-bit integer)
@@ -246,6 +249,17 @@ The server has different responsibilities:
 
 ## Schema resolving 
 Resolver function is a function that resolves a variable for a certain type or field and return objects or primitives like numbers. They work on values, types or fields but also on other APIs, databases, caches or other sources.
+
+Note that we can run a middleware before our actual resolver. [TypeGraphQL enables us](https://typegraphql.com/docs/middlewares.html#how-to-use) to decorate our resolvers with middleware to apply them:
+
+```ts
+// typeorm: 0.2.25
+@Mutation(() => Post)     // define this function as mutation
+@UseMiddleware(isAuth)    // apply middleware to first check if the user is authenticated
+async createPost() {
+  ...
+}
+```
 
 ## Networking
 Queries transported to server over HTTPS.
