@@ -1,6 +1,8 @@
 # Typescript notes
 Typescript is compatible with JS. It is required to compile from TS code to JS code we can run in the browser (or what not) because TS has no native support in browser or node etc. (maybe using extensions, but that's a no-go).
 
+A notable mention similar to typescript is [flow](https://flow.org/en/docs/getting-started/).
+
 In order to customize the TS behaviour we need to create a _tsconfig.json_ file. In this file there are tons of options, but the most important are:
 
   - target: Target JS version (default is ES3 at the time of writing this)

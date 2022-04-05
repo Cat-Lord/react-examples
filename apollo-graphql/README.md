@@ -139,6 +139,10 @@ fragment Repos on RepositoryConnection {
 }
 ```
 
+It can be wise to implement specific fragments because of the risk of circular imports. For example Session has a UserSession which has a User + Session. Tools like [Webpack can have problems](https://github.com/withspectrum/spectrum/blob/alpha/docs/api/graphql/fragments.md#structure) with such structure.
+
+It is advised from a performance standpoint to have fragments as shallow as possible.
+
 ## Operations
 Queries don't have to have a name or can have only `query` name. These examples are valid and identical.
 
