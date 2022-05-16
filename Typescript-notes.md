@@ -40,6 +40,24 @@ Arrays can also have a specific type defined as array of that type:
   arr.push("meow");     // error !  
 ```
 
+### Casting to different types
+It is possible to cast to a different type using `as` or `<>` operator:
+
+```ts
+  const input1 = document.querySelector('input[type="text"]') as HTMLInputElement;
+  const input2 = <HTMLInputElement> document.querySelector('input[type="text"]');
+
+  // interface which pick only related parts of HTMLInputElement
+  interface MyInterface = {
+    ...
+  }
+
+  // re-cast a type when using it like this
+  if ((input as MyInterface).value) {
+    ...
+  }
+```
+
 ## Functions
 Annotating function is possible by specifying the arguments and return value
 
@@ -285,6 +303,17 @@ This looks like a general and perfect approach, although we must be careful to i
   const defaultConfig = {
     ...
   } as Parameters<typeof TPL.create>[1];  // implement second argument, configuration !
+```
+
+When we need to determine the type that a function returns, we can use ReturnType utility:
+
+```ts
+  import TPL from 'third-party-library';
+  
+  type obj = {
+    id: number,
+    value: ReturnType<typeof TPL.init>    // here we determine the type of whatever the 'init' function returns
+  };
 ```
 
 ### Reference

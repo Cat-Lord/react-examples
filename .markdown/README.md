@@ -1,0 +1,1 @@
+Utility folder for markdown, mostly for images, screenshots, long examples, .etc

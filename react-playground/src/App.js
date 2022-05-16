@@ -11,7 +11,7 @@ import Form from 'components/form';
 import NullValue from 'components/nullValue';
 import WaterTemperature from 'components/WaterTemperature';
 import Sidebar from 'components/Sidebar';
-import SplitPanel from 'SplitPanel';
+import SplitPanel from 'components/SplitPanel';
 import SignUpDialog from 'components/SignUp';
 
 /*
@@ -56,7 +56,7 @@ function App(props) {
 
       <h3>What do you think ? {props.message}</h3>
       <div className="horizontal-body">
-        <img src="https://kitcat.com.sg/wp-content/uploads/2020/07/Kit-Cat.png" alt="Kittie" width="300" height="auto"/>
+        {/* <img src="https://kitcat.com.sg/wp-content/uploads/2020/07/Kit-Cat.png" alt="Kittie" width="300" height="auto"/> */}
         <NullValue />
         <WaterTemperature />
         <SplitPanel />

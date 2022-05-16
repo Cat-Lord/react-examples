@@ -253,7 +253,7 @@ Resolver function is a function that resolves a variable for a certain type or f
 Note that we can run a middleware before our actual resolver. [TypeGraphQL enables us](https://typegraphql.com/docs/middlewares.html#how-to-use) to decorate our resolvers with middleware to apply them:
 
 ```ts
-// typeorm: 0.2.25
+// typegraphql version: 1.0.0-rc.3
 @Mutation(() => Post)     // define this function as mutation
 @UseMiddleware(isAuth)    // apply middleware to first check if the user is authenticated
 async createPost() {
@@ -310,5 +310,5 @@ For our gql definitions we need to create and maintain a **resolver map** which 
 -- TODO 3: FilterById (implementovat a pokracovat)
 
 ==
--- 5:22 https://www.youtube.com/watch?v=I6ypD7qv3Z8
+-- x:xx https://www.youtube.com/watch?v=I6ypD7qv3Z8
 -- zopakovat si pripadne reset hesla
