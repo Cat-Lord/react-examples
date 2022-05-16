@@ -1,0 +1,6 @@
+query Random {
+  allBooks {
+    name
+    pageCount
+  }
+}

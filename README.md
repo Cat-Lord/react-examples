@@ -60,3 +60,12 @@ Project containing as little configuration as possible. Used for testing typescr
 Using:
 - nodemon: fast reload
 - ts-node: nodejs server with typescript
+
+## apollo-client--snowpack-react-typescript
+My focus was to try the apollo-client out. I worked towards almost a working example but I wanted to use a bundler to simplify the initialization process. I ended up trying out snowflake (bundler, which I wanted to try out for some time) and realized it is really simple using a snowflake create app (similar to create-react-app).
+
+Using:
+- typescript
+- react 17
+- snowflake
+- apollo-client
