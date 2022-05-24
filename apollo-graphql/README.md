@@ -29,7 +29,7 @@ Fields are optional by default and appending them with '!' makes them required. 
 type Cat {
   id: ID!
   born: String
-  neutered: Boolean,
+  neutered: Boolean
   kittens: [Cat]
 }
 ```

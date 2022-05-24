@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import {
   ApolloClient,
@@ -10,6 +10,11 @@ import {
 } from "@apollo/client";
 import { ErrorResponse, onError } from '@apollo/client/link/error';
 import type { GraphQLError } from 'graphql';
+import { ChakraProvider } from '@chakra-ui/react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import CreateAttendance from './attendance/CreateAttendance';
+import NotFound from './NotFound';
+import StatisticsDashboard from './statistics/StatisticsDashboard';
 
 const errorLink = onError((error: ErrorResponse) => {
   if (error.graphQLErrors) {
@@ -31,11 +36,15 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root')!);
+root.render(
   <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
-  document.getElementById('root'),
+    <ChakraProvider>
+
+      <App />
+
+    </ChakraProvider>
+  </ApolloProvider >
 );
 
 // Hot Module Replacement (HMR) - Remove this snippet to remove HMR.

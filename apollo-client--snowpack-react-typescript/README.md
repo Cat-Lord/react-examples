@@ -5,7 +5,24 @@ This is a react-typescript project set up with snowpack. Let's try it out !
 1. `npx create-snowpack-app snowpack-react-typescript --template @snowpack/app-template-react-typescript`
 2. Add apollo-client and graphql libraries `npm i @apollo/client graphql`
 
-And that's about it ! Easy.
+And that's about it ! Easy... not really.
+
+### React versions
+Recently there was a new React version (React 18) and I needed to use this version because some libraries declare it as a peer dependency[^1]. In addition, React-DOM types were not properly installed and I had to install them by hand multiple times. The best way was to enlist the version number: `npm i @types/react@18 @types/react-dom@18`.
+Be sure you have the correct types versions installed. Try running:
+
+We can't rely on the IDE to pick up everything correctly. I had to manually type the import and use `createRoot` like this:
+
+```ts
+import { createRoot } from 'react-dom/client';
+
+const root = createRoot(document.getElementById('root')!);   // notice the '!'
+root.render(<App />);
+```
+
+Notice how we need to tell typescript that we are sure the root won't be null with the exclamation mark ('!') as described in [Updates to Client Rendering APIs](https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#updates-to-client-rendering-apis).
+
+[^1]: Peer dependency are declared by additional libraries can be explained as "in my library I need you to use this specific dependency for me to work properly".
 
 ### Graphql codegen
 Install via `npm i @graphql-codegen/typescript`, after that we run the initialization setup with `npx graphql-codegen init`.  We can always modify these settings in the generated config file (in this case `codegen.yml`) or create our own from scratch. It guides the code generation tool on how and where to generate files from our graphql.
@@ -63,6 +80,11 @@ After creating the configuration file we need to install codegen plugins via `np
   ✔ Parse configuration
   ✔ Generate outputs
 ```
+
+# UI Library
+I checked for component libraries and found Material-UI. Unfortunately, MUI [doesn't work with Snowpack](https://github.com/mui/material-ui/issues/26568) for now and we have to leave it.
+
+Next library I considered is Chakra-UI and works just fine. We just need to supply the `ChakraProvider` at the top of the component hierarchy to ensure proper propagation. Later we can use themes, global configurations and more.
 
 # Building for production
 
