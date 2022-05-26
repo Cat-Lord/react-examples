@@ -30,9 +30,18 @@ type Cat {
   id: ID!
   born: String
   neutered: Boolean
-  kittens: [Cat]
+
+  lovedKittens: [Cat!]!
+  hatedKittens: [Cat!]
+  adoptedKittens: [Cat]
 }
 ```
+
+Notice the last three attributes. Exclamation mark is used for different purposes:
+
+- lovedKittens: An array of type `Cat` which will always have non-null members and will never be `null` (can be empty).
+- hatedKittens: Again, array only of type `Cat` (no null values) but the array itself can be `null` (who would hate kittens ? 🤨).
+- adoptedKittens: Array, that can be null AND can contain null values.
 
 Query then contains required and/or optional fields when using a type:
 

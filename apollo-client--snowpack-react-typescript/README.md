@@ -92,3 +92,21 @@ Builds a static copy of your site to the `build/` folder.
 Your app is ready to be deployed!
 
 **For the best production performance:** Add a build bundler plugin like "@snowpack/plugin-webpack" to your `snowpack.config.mjs` config file.
+
+# Common issues
+Graphql generated file gets imported with absolute path like this
+
+`import { FishingGround, useAllFishingGroundQuery } from 'src/graphql/generated/graphql-gen'`. This causes issues 
+
+because Snowpack throws an error that reads 
+
+`Cannot find module 'src/graphql/generated/graphql' from '/home/catlord/react-workspace/apollo-client--snowpack-react-typescript'`.
+
+Solving this is possible by supplying **relative** path to the graphQL file like this: 
+
+`import { FishingGround, useAllFishingGroundQuery } from '../graphql/generated/graphql-gen';`.
+
+[This can be adjusted](https://stackoverflow.com/questions/52432191/auto-import-in-visual-studio-code-only-offering-absolute-path-with-lerna-subpack) in VS Code settings: 
+
+- File → Preferences → Settings → User Settings
+- set `importModuleSpecifier` to `relative`

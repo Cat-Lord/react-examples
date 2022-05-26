@@ -11,10 +11,6 @@ import {
 import { ErrorResponse, onError } from '@apollo/client/link/error';
 import type { GraphQLError } from 'graphql';
 import { ChakraProvider } from '@chakra-ui/react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CreateAttendance from './attendance/CreateAttendance';
-import NotFound from './NotFound';
-import StatisticsDashboard from './statistics/StatisticsDashboard';
 
 const errorLink = onError((error: ErrorResponse) => {
   if (error.graphQLErrors) {
