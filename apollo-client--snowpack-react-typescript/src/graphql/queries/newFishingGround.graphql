@@ -1,0 +1,12 @@
+query AllFishAndFishingGrounds {
+	allFishingGround {
+    id
+    code
+    label
+  }
+  
+  allFish {
+    id
+    name
+  }
+}
