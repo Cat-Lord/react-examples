@@ -1,4 +1,4 @@
-import { FormControl, FormErrorMessage, FormLabel, useAccordionItemState } from '@chakra-ui/react'
+import { FormControl, FormErrorMessage, FormLabel, Select } from '@chakra-ui/react'
 import { Field, useField } from 'formik';
 import React, { SelectHTMLAttributes } from 'react'
 
@@ -24,9 +24,10 @@ const SelectField: React.FC<SelectFieldProps<any>> = ({ size: _size, ...props })
       <FormLabel htmlFor={field.name}>{props['aria-label']}</FormLabel>
 
       <Field
-        as='select'
+        as={Select}
         {...field}
         name={field.name}
+        errors={error}
       >
         {
           props.items.map((item: any) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CreateAttendance from './attendance/CreateAttendance';
-import ErrorPage from './ErrorPage';
+import ErrorPage from './globalErrorHandling/ErrorPage';
 import { useCheckConnectionQuery } from './graphql/generated/graphql-gen';
 import Home from './Home';
 import Navigation from './Navigation';

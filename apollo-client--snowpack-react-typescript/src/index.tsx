@@ -6,21 +6,24 @@ import {
   InMemoryCache,
   ApolloProvider,
   from,
-  HttpLink
+  HttpLink,
 } from "@apollo/client";
-import { ErrorResponse, onError } from '@apollo/client/link/error';
+import { onError } from '@apollo/client/link/error';
 import type { GraphQLError } from 'graphql';
 import { ChakraProvider } from '@chakra-ui/react';
 
-const errorLink = onError((error: ErrorResponse) => {
-  if (error.graphQLErrors) {
-    error.graphQLErrors.map((currentError: GraphQLError) => {
-      const formattedError = currentError.toJSON();
+const errorLink = onError((errorHandler) => {
+  const { graphQLErrors, networkError } = errorHandler;
 
-      alert(`Graphql Error: ${formattedError.message}\npath: ${formattedError.path}`)
-    })
+  graphQLErrors?.map((currentError: GraphQLError) => {
+    console.log(`Graphql Error: ${currentError.message}\npath: ${currentError.path}`);
+  })
+
+  if (networkError) {
+    console.log(`Graphql Error: ${networkError.message}\npath: ${networkError.cause}`);
   }
-})
+
+});
 
 const graphqlServerLink = from([
   errorLink,
