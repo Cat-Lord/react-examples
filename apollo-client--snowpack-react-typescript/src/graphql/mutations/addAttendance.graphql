@@ -1,0 +1,3 @@
+mutation AddAttendance($fishingGroundID:ID!, $totalVisits:Int!, $catches:[NewCatch!]){
+  addAttendance(fishingGroundID:$fishingGroundID, totalVisits:$totalVisits, catches:$catches)
+}
