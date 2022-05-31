@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import { Alert, AlertIcon, Box, Button, Center, Heading, Spinner, useToast } from '@chakra-ui/react';
+import { AttendanceStatisticsDocument, FishingGround, NewCatch, useAddAttendanceMutation, useAllFishAndFishingGroundsQuery } from '../graphql/generated/graphql-gen';
+import type { ErrorResponse } from '@apollo/client/link/error';
+import { Box, Button, Center, Container, Spinner, useToast } from '@chakra-ui/react';
 import { Form, Formik, FormikErrors } from 'formik';
+import React, { useState } from 'react';
 import InputField from '../forms/InputField';
 import SelectField from '../forms/SelectField';
-import { FishingGround, NewCatch, useAddAttendanceMutation, useAllFishAndFishingGroundsQuery } from '../graphql/generated/graphql-gen';
 import AddCatchForm from './AddCatchForm';
-import type { ErrorHandler, ErrorResponse } from '@apollo/client/link/error';
 
 type FormInitialValues = {
   selectedFishingGround: string
@@ -17,9 +17,12 @@ type FormInitialValues = {
   caughtFishTotalWeight: number
 }
 
+
 const CreateAttendance: React.FC = () => {
   const { error, loading, data } = useAllFishAndFishingGroundsQuery();
-  const [addAttendanceMutation] = useAddAttendanceMutation();
+  const [addAttendanceMutation] = useAddAttendanceMutation({
+    refetchQueries: [{ query: AttendanceStatisticsDocument }]   // update statistics on each successful addition
+  });
   const [catches, setCatches] = useState<NewCatch[]>([]);
   const toast = useToast();
 
@@ -49,7 +52,7 @@ const CreateAttendance: React.FC = () => {
         <Formik
           initialValues={formInitialValues}
 
-          onSubmit={async (values) => {
+          onSubmit={async (values, actions) => {
             const { selectedFishingGround, numberOfVisits } = values;
             await addAttendanceMutation({
               variables: {
@@ -71,6 +74,9 @@ const CreateAttendance: React.FC = () => {
 
               throw error;
             });
+
+            setCatches([]);
+            actions.resetForm();
           }}
 
           validateOnChange={false}  // only validate when submitting
@@ -96,16 +102,14 @@ const CreateAttendance: React.FC = () => {
             if (values.caughtFishTotalWeight == 0 && values.caughtFishAmount != 0)
               errors.caughtFishAmount = "No weight set for caught fish";
 
-            console.log('Errors in parent form', errors);
-            console.log('NO keys ? ', Object.keys(errors).length);
-
             if (Object.keys(errors).length === 0)
               return undefined;
+
             return errors;
           }}
         >
           {({ isSubmitting }) => (
-            <>
+            <Container position='relative' maxW={'6xl'}>
               <Form>
                 <SelectField
                   name='selectedFishingGround'
@@ -113,19 +117,30 @@ const CreateAttendance: React.FC = () => {
                   items={data.allFishingGround}
                   getKey={(fishingGround: FishingGround) => fishingGround.id}
                   getValue={(fishingGround: FishingGround) => fishingGround.code + ": " + fishingGround.label}
+                  width='35%'
                 />
                 <InputField
                   name='numberOfVisits'
                   type={'number'}
                   placeholder='number of visits'
                   aria-label='Number of visits'
+                  width='10%'
                   required
                 />
-                <Button disabled={isSubmitting} type='submit'>Add</Button>
+                <Button
+                  disabled={isSubmitting}
+                  position='absolute'
+                  bottom={0}
+                  right={0}
+                  size='lg'
+                  type='submit'
+                >
+                  Add
+                </Button>
               </Form>
 
               <AddCatchForm isSubmitting={isSubmitting} allFish={data.allFish} catches={catches} setCatches={setCatches} />
-            </>
+            </Container>
           )}
         </Formik>
       </Box >

@@ -2,18 +2,19 @@ import { FormControl, FormErrorMessage, FormLabel, Select } from '@chakra-ui/rea
 import { Field, useField } from 'formik';
 import React, { SelectHTMLAttributes } from 'react'
 
+
 type SelectFieldProps<T> = SelectHTMLAttributes<HTMLSelectElement> & {
   name: string;
+  width?: string;
 
   items: T[];
 
   // callbacks
-  onSelectionChange?: (selectedItem: T) => any;
   getKey: (item: T) => string;
   getValue: (item: T) => string;
 };
 
-const SelectField: React.FC<SelectFieldProps<any>> = ({ size: _size, ...props }) => {
+const SelectField: React.FC<SelectFieldProps<any>> = ({ size: _size, getKey, getValue, ...props }) => {
   const [field, { error }] = useField(props.name);
 
   if (props.items.length == 0)
@@ -26,13 +27,14 @@ const SelectField: React.FC<SelectFieldProps<any>> = ({ size: _size, ...props })
       <Field
         as={Select}
         {...field}
+        {...props}
         name={field.name}
         errors={error}
       >
         {
           props.items.map((item: any) => {
-            const key = props.getKey(item);
-            const value = props.getValue(item);
+            const key = getKey(item);
+            const value = getValue(item);
 
             return (
               <option key={key} value={key}>
