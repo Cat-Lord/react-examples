@@ -1,8 +1,16 @@
+import { Box } from '@chakra-ui/react'
 import React from 'react'
+import AttendanceStatistics from './AttendanceStatistics'
+import FishingGroundStatistics from './FishingGroundStatistics'
+import FishStatistics from './FishStatistics'
 
 function StatisticsDashboard() {
   return (
-    <div>StatisticsDashboard</div>
+    <Box>
+      <AttendanceStatistics />
+      <FishingGroundStatistics />
+      <FishStatistics />
+    </Box>
   )
 }
 

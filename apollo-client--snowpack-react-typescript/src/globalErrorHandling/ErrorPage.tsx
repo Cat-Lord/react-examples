@@ -1,8 +1,10 @@
-import { Center, Image, Text } from '@chakra-ui/react'
+import { Center, Container, Image, Text } from '@chakra-ui/react'
 import React from 'react'
 
 type ErrorPageProps = {
   errorMessage: string
+  fontSize?: string
+  boxSize?: string
 }
 
 const errorImageLinks = [
@@ -14,16 +16,16 @@ const errorImageLinks = [
 
 const ErrorPage: React.FC<ErrorPageProps> = (props) => {
   return (
-    <Center h='100vh' flexDirection={'column'} alignItems={'center'}>
-      <Text fontSize='6xl'>{props.errorMessage}</Text>
+    <Container boxSize={props?.boxSize} flexDirection={'column'} >
+      <Text fontSize={props.fontSize ?? '6xl'}>{props.errorMessage}</Text>
       <Image
         src={
           errorImageLinks[
           Math.floor(Math.random() * errorImageLinks.length)
           ]
         }
-        alt='page not found image' />
-    </Center>
+        alt='Error has occurred Image' />
+    </Container>
   )
 }
 

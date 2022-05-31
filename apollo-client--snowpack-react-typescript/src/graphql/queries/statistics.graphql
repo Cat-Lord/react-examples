@@ -1,0 +1,11 @@
+query attendanceStatistics {
+  statistics: allFishingGroundsStatistics{
+    fishingGround {
+      id
+      label
+    }
+    totalNumberOfVisits
+    totalAmount
+    totalWeight
+  }
+}
