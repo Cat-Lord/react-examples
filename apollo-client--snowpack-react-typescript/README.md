@@ -86,6 +86,137 @@ I checked for component libraries and found Material-UI. Unfortunately, MUI [doe
 
 Next library I considered is Chakra-UI and works just fine. We just need to supply the `ChakraProvider` at the top of the component hierarchy to ensure proper propagation. Later we can use themes, global configurations and more.
 
+# Formik
+This app is expected to contain several forms and I wanted to try this library to see how it feels. From starters I was confused on how to use it properly and got stuck on some use cases. I will now describe usage and important points.
+
+## Form is a render prop
+Formik wraps forms in a `<Formik>` wrapper that supplies forms with some default values (like `onChange`, `onBlur`, etc.). These should be provided via render props, so our structure should look like this:
+
+```jsx
+<Formik>
+{ 
+  (values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isSubmitting) => (
+
+      <form onSubmit={handleSubmit}>
+        { /* ... */ }
+      </form>
+  )
+}
+</Formik>
+```
+
+We can further use Formik's `Form` component to make this automatic:
+
+```jsx
+<Formik>
+{ ({isSubmitting}) => (
+    // no need to pass props
+    <Form>
+      <Field /* ... */>
+      <Field /* ... */>
+      
+      {/* but we are still able to use props wherever needed */}
+      <button disabled={isSubmitting}>Submit</button>
+    </Form>
+  )
+}
+</Formik>
+```
+
+## Using Formik with UI libraries
+Formik uses `Field` components to render and manage form data. We can create a field from available props using the `useField(props)` hook which will return props for Formik's `Field`. The field will be populated with defaults if necessary. Other than useful props we also get information like metadata (if the field was touched, if it has errors, etc.). But how can we now change the way it looks when we create it through Formik's interface ?
+
+There is a prop for that as well. The prop is called `as` and we provide it with the component we wish to render the `Field` as. The process is simple and can look like this:
+
+```jsx
+import { Select } from '@chakra-ui/react' // example UI library
+
+// ...
+const [field] = useField(props);
+
+return (
+  // not using a library renders default HTML select
+  <Field as='select' {...field} />
+  
+  // library-supported select
+  <Field as={Select} {...field} />
+)
+```
+
+We can see the difference in the following screenshot (left is before and right is after)
+
+![Before and after applying `as`](../.markdown/field_as.png)
+
+### Generalization
+There could be one slight issue with this approach. If we have, let's say, a complex UI component that uses several required attributes, we cannot really supply it to the field (as seen above). Therefore the solution in this case is to create a custom component which will obtain required and supplied attributes.
+
+```jsx
+import { ComplexInput } from '@third-party/inputs';
+
+// custom wrapper around <ComplexInput>
+const CustomComplexComponent = (props) => {
+  // create formik field attributes
+  const [field] = useField(props.name);
+
+  return (
+    // use required props as expected and add the formik field attributes too
+    <ComplexInput something={props.something} important={props.important} {...field} />
+  );
+}
+```
+
+## Related Forms
+Sometimes we need to handle multiple forms as one big form. It is forbidden to embed forms[^2] therefore we need to implement a mechanism that would ensure communication on the level of related forms.
+
+Let's revisit important Formik components:
+
+- `Formik`: Usually top-level wrapper for forms. [Docs](https://formik.org/docs/api/formik).
+- `Form`: [Wrapper](https://formik.org/docs/api/form) around HTML forms.
+
+If we take a closer look we might discover that `Formik` acts as a manager and `Form` more like a template. And indeed, experimenting with it uncovers us some important pieces of knowledge - we cannot nest forms but we can handle multiple forms at once. We achieve this by enclosing multiple forms within one `Formik` wrapper !
+
+Slight disadvantages of this are that we need to manage multiple logically separated entities together. Important point is that if **one form submits, all forms are submitted at once**. We can make use of HTML event handlers like `onClick` to prevent the submit if not necessary. Let's see an example:
+
+```jsx
+<Formik
+  // initializing ALL forms at once
+  initialValues={{ first: '', sec: '' }}
+
+  onSubmit={(values: any, helpers: FormikHelpers<any>) => {
+    // handling submit of all forms
+    console.log('Submitting: ', values)
+    helpers.resetForm()
+  }}>
+  {() => (
+    <>
+      <Form>
+        <InputField name='first' type={'text'} aria-label='first' placeholder='' />
+        {/* using this submit triggers Formik's onSubmit() function */}
+        <Button type='submit' onClick={() => console.log('submit f')}>f</Button>
+      </Form>
+
+      <Form>
+        <InputField name='sec' type={'text'} aria-label='sec' placeholder='' />
+        
+        {/* preventDefault let's us do validation, data handling and similar without the actual submit action */}
+        <Button type='submit' onClick={(e: any) => { console.log('submit s'); e.preventDefault(); }}>s</Button>
+
+      </Form>
+    </>
+  )}
+</Formik >
+```
+
+Using the `preventDefault` function prevents the submission of all forms and we can do any required logic on submitted values using formik's  `useFormikContext()` [hook](https://formik.org/docs/api/useFormikContext).
+
+[^2]: [W3 standard](https://www.w3.org/MarkUp/html3/forms.html) states 'There can be several forms in a single document, but the FORM element can't be nested'.
+
 # Building for production
 
 Builds a static copy of your site to the `build/` folder.

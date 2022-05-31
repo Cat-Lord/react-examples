@@ -37,9 +37,6 @@ coverage/
 build/
 dist/
 
-# generated files
-**/generated
-
 # misc
 .DS_Store
 .env.local

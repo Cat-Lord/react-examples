@@ -11,9 +11,12 @@ const InputField: React.FC<InputFieldProps> = ({ size: _, ...props }) => {
 
   return (
     <FormControl isInvalid={!!error}>
-      <FormLabel htmlFor={field.name}>{props['aria-label']}</FormLabel>
+      {
+        // dont render label if none if supplied
+        props['aria-label'] ? <FormLabel htmlFor={field.name}>{props['aria-label']}</FormLabel> : null
+      }
       <Input {...field} id={field.name} />
-      {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
+      {!!error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
     </FormControl>
   )
 }
