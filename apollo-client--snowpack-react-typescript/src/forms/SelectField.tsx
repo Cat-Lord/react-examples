@@ -6,6 +6,7 @@ import React, { SelectHTMLAttributes } from 'react'
 type SelectFieldProps<T> = SelectHTMLAttributes<HTMLSelectElement> & {
   name: string;
   width?: string;
+  selectSize?: string;
 
   items: T[];
 
@@ -14,7 +15,7 @@ type SelectFieldProps<T> = SelectHTMLAttributes<HTMLSelectElement> & {
   getValue: (item: T) => string;
 };
 
-const SelectField: React.FC<SelectFieldProps<any>> = ({ size: _size, getKey, getValue, ...props }) => {
+const SelectField: React.FC<SelectFieldProps<any>> = ({ size: _size, getKey, getValue, selectSize, ...props }) => {
   const [field, { error }] = useField(props.name);
 
   if (props.items.length == 0)
@@ -25,6 +26,7 @@ const SelectField: React.FC<SelectFieldProps<any>> = ({ size: _size, getKey, get
       <FormLabel htmlFor={field.name}>{props['aria-label']}</FormLabel>
 
       <Field
+        size={selectSize}   // pass props for select 
         as={Select}
         {...field}
         {...props}

@@ -3,10 +3,11 @@ import { useField } from 'formik';
 import React, { InputHTMLAttributes, LabelHTMLAttributes } from 'react'
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & LabelHTMLAttributes<HTMLLabelElement> & {
-  name: string
+  name: string;
+  inputSize?: string;
 };
 
-const InputField: React.FC<InputFieldProps> = ({ size: _, ...props }) => {
+const InputField: React.FC<InputFieldProps> = ({ size: _, inputSize, ...props }) => {
   const [field, { error }] = useField(props.name);
 
   return (
@@ -16,6 +17,7 @@ const InputField: React.FC<InputFieldProps> = ({ size: _, ...props }) => {
         props['aria-label'] ? <FormLabel htmlFor={field.name}>{props['aria-label']}</FormLabel> : null
       }
       <Input
+        size={inputSize}
         {...field}
         {...props}
         id={field.name} />

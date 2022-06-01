@@ -1,11 +1,11 @@
-import { Box, Button, Flex, GridItem, SimpleGrid, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react'
+import { Button, Flex, GridItem, HStack, SimpleGrid, Table, TableCaption, TableContainer, TableContainerProps, Tbody, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react'
 import { Form, useFormikContext } from 'formik'
 import React from 'react'
 import InputField from '../forms/InputField'
 import SelectField from '../forms/SelectField'
 import type { Fish, NewCatch } from '../graphql/generated/graphql-gen'
 
-type AddCatchFormProps = {
+type AddCatchFormProps = TableContainerProps & {
   allFish: Fish[]
   catches: NewCatch[]
   setCatches: React.Dispatch<React.SetStateAction<NewCatch[]>>   // use state setter function
@@ -19,7 +19,7 @@ type FormValues = {
 }
 
 
-const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatches, isSubmitting }) => {
+const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatches, isSubmitting, ...props }) => {
   const context = useFormikContext<any>();
 
   const addNewCatch = (newCatch: FormValues) => {
@@ -50,7 +50,7 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
     }
   }
 
-  const resetForm = () => {
+  const resetCatchForm = () => {
     context.setFieldValue("selectedFish", allFish[0].id);
     context.setFieldValue("caughtFishAmount", 0);
     context.setFieldValue("caughtFishTotalWeight", 0.0);
@@ -73,7 +73,7 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
     const hasErrors = errs === undefined;
     if (hasErrors === false) {
       addNewCatch(values);
-      resetForm();
+      resetCatchForm();
     }
 
     event.preventDefault(); // stop from propagating the submit to the parent form
@@ -81,16 +81,13 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
 
   return (
     <Form>
-      <SimpleGrid
-        h={350}
-        columns={2}
-        spacing={6}
-      >
-        <VStack spacing={8} pt={8} justifyContent={'flex-end'}>
+      <HStack alignItems={'flex-start'} spacing={6} h='50vh'>
+        <VStack spacing={4} pt={8}>
           <SelectField
             name='selectedFish'
             aria-label='Select Fish'
             items={allFish}
+            selectSize={'sm'}
             getKey={(fish: Fish) => fish.id}
             getValue={(fish: Fish) => fish.id + ": " + fish.name}
           />
@@ -108,6 +105,7 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
                   placeholder='number of fish caught'
                   aria-label='Number of Fish Caught'
                   width={'50%'}
+                  inputSize='sm'
                   required
                 />
                 <InputField
@@ -116,6 +114,7 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
                   placeholder='total weight of fish caught'
                   aria-label='Total Weight of Fish Caught'
                   width={'50%'}
+                  inputSize='sm'
                   required
                 />
               </VStack>
@@ -141,39 +140,37 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
           </SimpleGrid>
         </VStack>
 
-        <Box overflowY={'scroll'}>
-          <TableContainer h='100%' >
-            <Table variant={'striped'}>
-              <TableCaption m={0} placement='top'>Catches</TableCaption>
+        <TableContainer {...props} overflowY={'scroll'} >
+          <Table overflowY={'scroll'} variant={'striped'}>
+            <TableCaption m={0} placement='top'>Catches</TableCaption>
 
-              <Thead>
-                <Tr>
-                  <Th w='60'>Fish</Th>
-                  <Th w='20' isNumeric>Total Amount</Th>
-                  <Th w='20' isNumeric>Total Weight (kg)</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {
-                  catches.map((newCatch: NewCatch) => {
-                    const fish = allFish.find((currentFish) => currentFish.id === newCatch.fishID);
-                    if (fish == undefined)
-                      return null;
-                    return (
-                      <Tr key={newCatch.fishID}>
-                        <Td>{fish.name}</Td>
-                        <Td isNumeric>{newCatch.totalAmount}</Td>
-                        <Td isNumeric>{newCatch.totalWeight}</Td>
-                      </Tr>
-                    )
-                  })
-                }
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </SimpleGrid>
-    </Form>
+            <Thead>
+              <Tr>
+                <Th>Fish</Th>
+                <Th isNumeric>Total Amount</Th>
+                <Th isNumeric>Total Weight (kg)</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {
+                catches.map((newCatch: NewCatch) => {
+                  const fish = allFish.find((currentFish) => currentFish.id === newCatch.fishID);
+                  if (fish == undefined)
+                    return null;
+                  return (
+                    <Tr key={newCatch.fishID}>
+                      <Td>{fish.name}</Td>
+                      <Td isNumeric>{newCatch.totalAmount}</Td>
+                      <Td isNumeric>{newCatch.totalWeight}</Td>
+                    </Tr>
+                  )
+                })
+              }
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </HStack>
+    </Form >
   )
 }
 
