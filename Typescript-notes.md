@@ -58,6 +58,29 @@ It is possible to cast to a different type using `as` or `<>` operator:
   }
 ```
 
+### Creating types from existing types
+We are able to [create types out of existing types](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html) and their properties. Imagine a code-generative tool that creates 
+types as complex members.
+
+```ts
+type Generated = {
+  member: Array<{ __memberType?: 'Picture', width: number, height: number, resolution: number, format: { __typename?: 'PictureFormat', label: string, encoding: string, limit: number } }> | null, 
+  // ... other properties
+}
+```
+
+Imagine that we need to create component props that accept the `member` from the `Generated` type. How can we achieve it ? By simply referencing the property `member` just like we would accessing it as a javascript member.
+
+```ts
+type ComponentProps = {
+  member: Generated['member']   // treats the `member` as proper and standalone type
+}
+```
+
+On top of that if we made accidents using string as selector (as seen above with the `member` string), typescript would point out our mistake:
+
+> Property 'memberr' does not exist on type 'Generated'.
+
 ## Functions
 Annotating function is possible by specifying the arguments and return value
 
@@ -265,7 +288,7 @@ When we use typescript we can often run into a need to separate arguments from t
   };
 ```
 
-This is because port is of type 'int' and not of specific type how the `init` method might require. We can 'hack' the solution by creating default setting as const:
+This is because port is of type `number` and not of specific type how the `init` method might require. We can 'hack' the solution by creating default setting as const:
 
 ```ts
   const defaultSettings = {
