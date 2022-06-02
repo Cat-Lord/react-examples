@@ -146,9 +146,9 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
 
             <Thead>
               <Tr>
-                <Th>Fish</Th>
-                <Th isNumeric>Total Amount</Th>
-                <Th isNumeric>Total Weight (kg)</Th>
+                <Th w={60}>Fish</Th>
+                <Th w={20} isNumeric>Total Amount</Th>
+                <Th w={20} isNumeric>Total Weight (kg)</Th>
               </Tr>
             </Thead>
             <Tbody>

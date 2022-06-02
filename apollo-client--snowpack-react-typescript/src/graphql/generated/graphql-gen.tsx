@@ -23,10 +23,24 @@ export type AttendanceStatistics = {
   totalWeight: Scalars['Float'];
 };
 
+export type CatchStatistics = {
+  __typename?: 'CatchStatistics';
+  fish: Fish;
+  totalAmount: Scalars['Int'];
+  totalWeight: Scalars['Float'];
+};
+
 export type Fish = {
   __typename?: 'Fish';
   id: Scalars['ID'];
   name: Scalars['String'];
+};
+
+export type FishStatistics = {
+  __typename?: 'FishStatistics';
+  fish: Fish;
+  totalAmount: Scalars['Int'];
+  totalWeight: Scalars['Float'];
 };
 
 export type FishingGround = {
@@ -34,6 +48,12 @@ export type FishingGround = {
   code: Scalars['String'];
   id: Scalars['ID'];
   label: Scalars['String'];
+};
+
+export type FishingGroundCatchStatistics = {
+  __typename?: 'FishingGroundCatchStatistics';
+  catchStatistics: Array<CatchStatistics>;
+  fishingGround: FishingGround;
 };
 
 export type Mutation = {
@@ -56,9 +76,11 @@ export type NewCatch = {
 
 export type Query = {
   __typename?: 'Query';
+  allAttendanceStatistics?: Maybe<Array<AttendanceStatistics>>;
   allFish: Array<Fish>;
+  allFishStatistics?: Maybe<Array<FishStatistics>>;
   allFishingGround: Array<FishingGround>;
-  allFishingGroundsStatistics?: Maybe<Array<AttendanceStatistics>>;
+  allFishingGroundCatchStatistics?: Maybe<Array<FishingGroundCatchStatistics>>;
   getFishById?: Maybe<Fish>;
   getSession?: Maybe<Session>;
 };
@@ -100,10 +122,10 @@ export type CheckConnectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CheckConnectionQuery = { __typename?: 'Query', getSession?: { __typename?: 'Session', uid?: string | null } | null };
 
-export type AttendanceStatisticsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllStatisticsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AttendanceStatisticsQuery = { __typename?: 'Query', statistics?: Array<{ __typename?: 'AttendanceStatistics', totalNumberOfVisits: number, totalAmount: number, totalWeight: number, fishingGround: { __typename?: 'FishingGround', id: string, label: string } }> | null };
+export type AllStatisticsQuery = { __typename?: 'Query', allAttendanceStatistics?: Array<{ __typename?: 'AttendanceStatistics', totalNumberOfVisits: number, totalAmount: number, totalWeight: number, fishingGround: { __typename?: 'FishingGround', id: string, label: string } }> | null, allFishingGroundCatchStatistics?: Array<{ __typename?: 'FishingGroundCatchStatistics', fishingGround: { __typename?: 'FishingGround', id: string, label: string }, catchStatistics: Array<{ __typename?: 'CatchStatistics', totalAmount: number, totalWeight: number, fish: { __typename?: 'Fish', id: string, name: string } }> }> | null, allFishStatistics?: Array<{ __typename?: 'FishStatistics', totalWeight: number, totalAmount: number, fish: { __typename?: 'Fish', id: string, name: string } }> | null };
 
 
 export const AddAttendanceDocument = gql`
@@ -253,9 +275,9 @@ export function useCheckConnectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type CheckConnectionQueryHookResult = ReturnType<typeof useCheckConnectionQuery>;
 export type CheckConnectionLazyQueryHookResult = ReturnType<typeof useCheckConnectionLazyQuery>;
 export type CheckConnectionQueryResult = Apollo.QueryResult<CheckConnectionQuery, CheckConnectionQueryVariables>;
-export const AttendanceStatisticsDocument = gql`
-    query attendanceStatistics {
-  statistics: allFishingGroundsStatistics {
+export const AllStatisticsDocument = gql`
+    query AllStatistics {
+  allAttendanceStatistics {
     fishingGround {
       id
       label
@@ -264,32 +286,54 @@ export const AttendanceStatisticsDocument = gql`
     totalAmount
     totalWeight
   }
+  allFishingGroundCatchStatistics {
+    fishingGround {
+      id
+      label
+    }
+    catchStatistics {
+      fish {
+        id
+        name
+      }
+      totalAmount
+      totalWeight
+    }
+  }
+  allFishStatistics {
+    fish {
+      id
+      name
+    }
+    totalWeight
+    totalAmount
+  }
 }
     `;
 
 /**
- * __useAttendanceStatisticsQuery__
+ * __useAllStatisticsQuery__
  *
- * To run a query within a React component, call `useAttendanceStatisticsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAttendanceStatisticsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAllStatisticsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllStatisticsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAttendanceStatisticsQuery({
+ * const { data, loading, error } = useAllStatisticsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAttendanceStatisticsQuery(baseOptions?: Apollo.QueryHookOptions<AttendanceStatisticsQuery, AttendanceStatisticsQueryVariables>) {
+export function useAllStatisticsQuery(baseOptions?: Apollo.QueryHookOptions<AllStatisticsQuery, AllStatisticsQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<AttendanceStatisticsQuery, AttendanceStatisticsQueryVariables>(AttendanceStatisticsDocument, options);
+  return Apollo.useQuery<AllStatisticsQuery, AllStatisticsQueryVariables>(AllStatisticsDocument, options);
 }
-export function useAttendanceStatisticsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AttendanceStatisticsQuery, AttendanceStatisticsQueryVariables>) {
+export function useAllStatisticsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllStatisticsQuery, AllStatisticsQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<AttendanceStatisticsQuery, AttendanceStatisticsQueryVariables>(AttendanceStatisticsDocument, options);
+  return Apollo.useLazyQuery<AllStatisticsQuery, AllStatisticsQueryVariables>(AllStatisticsDocument, options);
 }
-export type AttendanceStatisticsQueryHookResult = ReturnType<typeof useAttendanceStatisticsQuery>;
-export type AttendanceStatisticsLazyQueryHookResult = ReturnType<typeof useAttendanceStatisticsLazyQuery>;
-export type AttendanceStatisticsQueryResult = Apollo.QueryResult<AttendanceStatisticsQuery, AttendanceStatisticsQueryVariables>;
+export type AllStatisticsQueryHookResult = ReturnType<typeof useAllStatisticsQuery>;
+export type AllStatisticsLazyQueryHookResult = ReturnType<typeof useAllStatisticsLazyQuery>;
+export type AllStatisticsQueryResult = Apollo.QueryResult<AllStatisticsQuery, AllStatisticsQueryVariables>;

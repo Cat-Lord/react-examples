@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import type { Attendance } from '.';
 import InputField from '../forms/InputField';
 import SelectField from '../forms/SelectField';
-import { AttendanceStatisticsDocument, FishingGround, NewCatch, useAddAttendanceMutation, useAllFishAndFishingGroundsQuery } from '../graphql/generated/graphql-gen';
+import { AllStatisticsDocument, FishingGround, NewCatch, useAddAttendanceMutation, useAllFishAndFishingGroundsQuery } from '../graphql/generated/graphql-gen';
 import AddCatchForm from './AddCatchForm';
 import NewAttendances from './NewAttendances';
 
@@ -23,7 +23,10 @@ type FormValues = {
 const CreateAttendance: React.FC = () => {
   const { error, loading, data } = useAllFishAndFishingGroundsQuery();
   const [addAttendanceMutation] = useAddAttendanceMutation({
-    refetchQueries: [{ query: AttendanceStatisticsDocument }]   // update statistics on each successful addition
+    // update statistics on each successful addition
+    refetchQueries: [
+      { query: AllStatisticsDocument },
+    ]
   });
   const [attendances, setAttendances] = useState<Attendance[]>([]);
   const [catches, setCatches] = useState<NewCatch[]>([]);

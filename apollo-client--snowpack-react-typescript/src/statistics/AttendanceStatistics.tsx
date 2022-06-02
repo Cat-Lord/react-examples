@@ -1,31 +1,15 @@
-import { TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Spinner, Center } from '@chakra-ui/react';
-import React, { useEffect } from 'react'
-import ErrorPage from '../globalErrorHandling/ErrorPage';
-import { AttendanceStatistics, useAttendanceStatisticsQuery } from '../graphql/generated/graphql-gen';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import React from 'react';
+import type { AllStatisticsQuery } from '../graphql/generated/graphql-gen';
 
 type AttendanceStatisticsProps = {
-
+  items: AllStatisticsQuery['allAttendanceStatistics']
 }
 
-const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = (props) => {
-  const { error, loading, data } = useAttendanceStatisticsQuery();
-
-  if (loading)
-    return <Spinner />;
-
-  if (error)
-    throw error;
-
-  if (data?.statistics?.length === 0)
-    return (
-      <ErrorPage boxSize='sm' fontSize='3xl' errorMessage='No attendance statistics found' />
-    );
-
+const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({ items }) => {
   return (
-    <TableContainer h='100%' >
+    <TableContainer>
       <Table variant={'striped'}>
-        <TableCaption m={0} placement='top'>Catches</TableCaption>
-
         <Thead>
           <Tr>
             <Th>Fishing Ground</Th>
@@ -36,7 +20,7 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = (props) => {
         </Thead>
         <Tbody>
           {
-            data?.statistics?.map((fishingGroundStats) => {
+            items?.map((fishingGroundStats) => {
               return (
                 <Tr key={fishingGroundStats.fishingGround.id}>
                   <Td>{fishingGroundStats.fishingGround.label}</Td>

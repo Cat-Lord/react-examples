@@ -1,5 +1,5 @@
-query attendanceStatistics {
-  statistics: allFishingGroundsStatistics{
+query AllStatistics {
+  allAttendanceStatistics {
     fishingGround {
       id
       label
@@ -7,5 +7,29 @@ query attendanceStatistics {
     totalNumberOfVisits
     totalAmount
     totalWeight
+  }
+
+  allFishingGroundCatchStatistics {
+    fishingGround{
+      id
+      label
+    }
+		catchStatistics{
+       fish {
+        id
+        name
+      }
+      totalAmount
+      totalWeight 
+    }
+  }
+
+  allFishStatistics {
+    fish{
+      id
+      name
+    }
+    totalWeight
+    totalAmount
   }
 }
