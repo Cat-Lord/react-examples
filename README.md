@@ -84,3 +84,12 @@ Project containing as little configuration as possible. Used for testing typescr
 Using:
 - nodemon: fast reload
 - ts-node: nodejs server with typescript
+
+
+## testing-react
+`create-react-app` environment with sample components and their respective testing techniques. Some tests are purposely duplicated to showcase different methods of achieving similar functionality. See README for more details.
+
+Using:
+- React test tools
+- Jest
+- Typescript
