@@ -3,8 +3,8 @@ import { Box, Button, HStack, Spinner, useToast } from '@chakra-ui/react';
 import { Form, Formik, FormikErrors, FormikHelpers } from 'formik';
 import React, { useState } from 'react';
 import type { Attendance } from '.';
-import InputField from '../forms/InputField';
-import SelectField from '../forms/SelectField';
+import InputField from '../formComponents/InputField';
+import SelectField from '../formComponents/SelectField';
 import { AllStatisticsDocument, FishingGround, NewCatch, useAddAttendanceMutation, useAllFishAndFishingGroundsQuery } from '../graphql/generated/graphql-gen';
 import AddCatchForm from './AddCatchForm';
 import NewAttendances from './NewAttendances';
@@ -176,8 +176,11 @@ const CreateAttendance: React.FC = () => {
                 position='absolute'
                 bottom={0}
                 right={0}
-                size='lg'
                 type='submit'
+                height='48px'
+                width='200px'
+                border='2px'
+                borderColor='grey.500'
               >
                 Add
               </Button>

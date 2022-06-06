@@ -1,8 +1,8 @@
 import { Button, Flex, GridItem, HStack, SimpleGrid, Table, TableCaption, TableContainer, TableContainerProps, Tbody, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react'
 import { Form, useFormikContext } from 'formik'
 import React from 'react'
-import InputField from '../forms/InputField'
-import SelectField from '../forms/SelectField'
+import InputField from '../formComponents/InputField'
+import SelectField from '../formComponents/SelectField'
 import type { Fish, NewCatch } from '../graphql/generated/graphql-gen'
 
 type AddCatchFormProps = TableContainerProps & {
@@ -132,6 +132,8 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
                   type='submit'
                   onClick={handleIntermediateSubmit}
                   size='lg'
+                  border='1px'
+                  borderColor='grey.100'
                 >
                   +
                 </Button>

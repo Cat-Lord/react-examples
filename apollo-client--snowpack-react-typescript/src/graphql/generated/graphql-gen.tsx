@@ -159,9 +159,9 @@ export type AddAttendanceMutationFn = Apollo.MutationFunction<AddAttendanceMutat
  * });
  */
 export function useAddAttendanceMutation(baseOptions?: Apollo.MutationHookOptions<AddAttendanceMutation, AddAttendanceMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<AddAttendanceMutation, AddAttendanceMutationVariables>(AddAttendanceDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddAttendanceMutation, AddAttendanceMutationVariables>(AddAttendanceDocument, options);
+      }
 export type AddAttendanceMutationHookResult = ReturnType<typeof useAddAttendanceMutation>;
 export type AddAttendanceMutationResult = Apollo.MutationResult<AddAttendanceMutation>;
 export type AddAttendanceMutationOptions = Apollo.BaseMutationOptions<AddAttendanceMutation, AddAttendanceMutationVariables>;
@@ -191,13 +191,13 @@ export const GetFishByIdDocument = gql`
  * });
  */
 export function useGetFishByIdQuery(baseOptions: Apollo.QueryHookOptions<GetFishByIdQuery, GetFishByIdQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetFishByIdQuery, GetFishByIdQueryVariables>(GetFishByIdDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFishByIdQuery, GetFishByIdQueryVariables>(GetFishByIdDocument, options);
+      }
 export function useGetFishByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFishByIdQuery, GetFishByIdQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetFishByIdQuery, GetFishByIdQueryVariables>(GetFishByIdDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFishByIdQuery, GetFishByIdQueryVariables>(GetFishByIdDocument, options);
+        }
 export type GetFishByIdQueryHookResult = ReturnType<typeof useGetFishByIdQuery>;
 export type GetFishByIdLazyQueryHookResult = ReturnType<typeof useGetFishByIdLazyQuery>;
 export type GetFishByIdQueryResult = Apollo.QueryResult<GetFishByIdQuery, GetFishByIdQueryVariables>;
@@ -231,13 +231,13 @@ export const AllFishAndFishingGroundsDocument = gql`
  * });
  */
 export function useAllFishAndFishingGroundsQuery(baseOptions?: Apollo.QueryHookOptions<AllFishAndFishingGroundsQuery, AllFishAndFishingGroundsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<AllFishAndFishingGroundsQuery, AllFishAndFishingGroundsQueryVariables>(AllFishAndFishingGroundsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllFishAndFishingGroundsQuery, AllFishAndFishingGroundsQueryVariables>(AllFishAndFishingGroundsDocument, options);
+      }
 export function useAllFishAndFishingGroundsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllFishAndFishingGroundsQuery, AllFishAndFishingGroundsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<AllFishAndFishingGroundsQuery, AllFishAndFishingGroundsQueryVariables>(AllFishAndFishingGroundsDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllFishAndFishingGroundsQuery, AllFishAndFishingGroundsQueryVariables>(AllFishAndFishingGroundsDocument, options);
+        }
 export type AllFishAndFishingGroundsQueryHookResult = ReturnType<typeof useAllFishAndFishingGroundsQuery>;
 export type AllFishAndFishingGroundsLazyQueryHookResult = ReturnType<typeof useAllFishAndFishingGroundsLazyQuery>;
 export type AllFishAndFishingGroundsQueryResult = Apollo.QueryResult<AllFishAndFishingGroundsQuery, AllFishAndFishingGroundsQueryVariables>;
@@ -265,13 +265,13 @@ export const CheckConnectionDocument = gql`
  * });
  */
 export function useCheckConnectionQuery(baseOptions?: Apollo.QueryHookOptions<CheckConnectionQuery, CheckConnectionQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<CheckConnectionQuery, CheckConnectionQueryVariables>(CheckConnectionDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckConnectionQuery, CheckConnectionQueryVariables>(CheckConnectionDocument, options);
+      }
 export function useCheckConnectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckConnectionQuery, CheckConnectionQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<CheckConnectionQuery, CheckConnectionQueryVariables>(CheckConnectionDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckConnectionQuery, CheckConnectionQueryVariables>(CheckConnectionDocument, options);
+        }
 export type CheckConnectionQueryHookResult = ReturnType<typeof useCheckConnectionQuery>;
 export type CheckConnectionLazyQueryHookResult = ReturnType<typeof useCheckConnectionLazyQuery>;
 export type CheckConnectionQueryResult = Apollo.QueryResult<CheckConnectionQuery, CheckConnectionQueryVariables>;
@@ -327,13 +327,13 @@ export const AllStatisticsDocument = gql`
  * });
  */
 export function useAllStatisticsQuery(baseOptions?: Apollo.QueryHookOptions<AllStatisticsQuery, AllStatisticsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<AllStatisticsQuery, AllStatisticsQueryVariables>(AllStatisticsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllStatisticsQuery, AllStatisticsQueryVariables>(AllStatisticsDocument, options);
+      }
 export function useAllStatisticsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllStatisticsQuery, AllStatisticsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<AllStatisticsQuery, AllStatisticsQueryVariables>(AllStatisticsDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllStatisticsQuery, AllStatisticsQueryVariables>(AllStatisticsDocument, options);
+        }
 export type AllStatisticsQueryHookResult = ReturnType<typeof useAllStatisticsQuery>;
 export type AllStatisticsLazyQueryHookResult = ReturnType<typeof useAllStatisticsLazyQuery>;
 export type AllStatisticsQueryResult = Apollo.QueryResult<AllStatisticsQuery, AllStatisticsQueryVariables>;

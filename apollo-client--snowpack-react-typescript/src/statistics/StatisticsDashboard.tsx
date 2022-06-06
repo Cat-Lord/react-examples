@@ -1,3 +1,4 @@
+import React from 'react';
 import { Spinner, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 import ErrorPage from '../globalErrorHandling/ErrorPage'
 import { useAllStatisticsQuery } from '../graphql/generated/graphql-gen'
@@ -18,10 +19,6 @@ function StatisticsDashboard() {
     return (
       <ErrorPage boxSize='sm' fontSize='3xl' errorMessage='No attendance statistics found' />
     );
-
-  const isDataAvailable = (data?: any[]): boolean => {
-    return !!data && data.length > 0;
-  }
 
   return (
     <Tabs variant={'enclosed-colored'} size={'lg'}>
