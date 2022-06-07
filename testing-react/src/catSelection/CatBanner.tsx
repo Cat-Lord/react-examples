@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef } from 'react'
+import React, { ChangeEvent, useEffect, useRef } from 'react'
 import { Cat } from './CatSelector'
 
 type CatBannerProps = {
@@ -27,10 +27,10 @@ const CatBanner: React.FC<CatBannerProps> = ({ cat, onChange }) => {
       <li>
         <h2>{cat.name}</h2>
       </li>
-      <li><small>{cat.dateOfBirth.toISOString()}</small></li>
+      <li><p>Born: {cat.dateOfBirth.getFullYear()} 😺</p></li>
       {
         cat.dateOfDeath ?
-          <li><small>{cat.dateOfDeath.toISOString()}</small></li>
+          <li><small>Passed: {cat.dateOfDeath.getFullYear()} 💔</small></li>
           : null
       }
 

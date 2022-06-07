@@ -73,10 +73,48 @@ it('to have correct default option selected on render', () => {
 
 Note that `Test Renderer` has some convenient functions that **wrap some of the logic we've seen** in previous example(s) and thus it's not always required to use, for example, the `act()` function.
 
+The **key difference is** that React Testing Libraries renders to DOM Nodes and Test Renderer renders to React Components.
+
 
 [^1]: If our test checks whether user specified correct input OR the input has appropriate label, test failure wouldn't reveal the problem right away. On the other hand having test for input correctness will immediately reveal that the input is incorrect if the test failed.
 
 [1]:../.markdown/react-component-data-structure.png
+
+## Testing Events
+Events can be tested on prop functions passed to the component. We need to use mocks to be able to detect any invocations, argument parsing, return value validation and others. Therefore we will use Jets' `jest.fn()`. We can supply default implementation to this `fn` function or even hard-code values that the function will return:
+
+```js
+const fn  = jest.fn();
+const fn1 = jest.fn((a, b) => a + b);
+
+// hardcode return value for one invocation
+const fn2 = jest.fn();
+fn2.mockReturnValueOnce(12);
+
+// all invocations will return this value
+const fn3 = jest.fn();
+fn3.mockReturnValue(123);
+```
+
+We can then access the mock and review its arguments, return values, and other properties via the `mock` attribute.
+
+```js
+const fn = jest.fn((a,b) => a + b);
+expect(fn(4,8)).toEqual(12);
+// received arguments
+expect(fn.mock.calls).toEqual([
+  [1,2]
+])
+// return value(s)
+expect(fn.mock.results).toEqual([
+  {
+    type: 'return',
+    value: 12
+  }
+])
+```
+
+It is possible but cumbersome to test events with Test Renderer. It provides no direct API for events but we can access props and invoke prop function this way.
 
 ## Asynchronous Tests
 Asynchronous tests are similar to synchronous with the exception that they must always return a promise. The caveat here is that if we forget to return the promise, **the test will always pass**. Therefore it is important to see our test fail, not only succeed.
@@ -113,6 +151,115 @@ test("cat should be selected after clicking on cat banner", async () => {
 
 This test is not ideal, because it relies on the implementation a little (expecting specific test-ids). But we can see the `forEach` loop we click each cat banner element (whatever actual HTML element it might be) but without waiting for the click to happen we wouldn't be able to ensure that respective checkbox input element is really checked. Therefore we `await` for the promise created by `waitFor`.
 
+Below we see a similar test but this time using Test Renderer and accessing props to invoke event handling function.
+
+```ts
+test("clicking a catBanner should reverse cats 'selected' value", () => {
+  const catToRender = { ...cats[0], selected: false };
+  const fn = jest.fn((catToRender: Cat) => {
+    catToRender.selected = !catToRender.selected
+    return catToRender.selected;
+  });
+
+  const { root } = create(<CatBanner cat={catToRender} onChange={fn} />);
+
+  act(() => {
+    root.props.onChange(catToRender);
+    root.props.onChange(catToRender);
+    root.props.onChange(catToRender);
+  });
+
+  expect(fn.mock.calls.length).toBe(3);
+  expect(fn.mock.results).toEqual([
+    {
+      type: 'return',
+      value: true
+    }, {
+      type: 'return',
+      value: false
+    }, {
+      type: 'return',
+      value: true
+    },
+  ])
+})
+```
+
+### Mocking Services
+In order to achieve proper service testing we have 2 options: 
+1. Use the service as is. This is slow and requires the service to be available at the time of testing.
+2. Mock the service with test values. This is fast but requires us to supply testing data.
+
+Using the second approach we arrive to a conclusion that it is necessary for us to write our code in a way it is possible to mock services. This is immediately visible if we do test-driven development. Otherwise we might be forced to adjust the code base to use services provided via props rather than using services directly.
+
+Consider next example taken from [GraphQL Client application from this repo](../apollo-client--snowpack-react-typescript). 
+
+```ts
+const CreateAttendance: React.FC = () => {
+  const { error, loading, data } = useAllFishAndFishingGroundsQuery();
+  const [addAttendanceMutation] = useAddAttendanceMutation({
+    // update statistics on each successful addition
+    refetchQueries: [
+      { query: AllStatisticsDocument },
+    ]
+  });
+
+  // ...
+}
+```
+
+The `CreateAttendance` component uses hooks that access the GraphQL server in order to obtain data. These hooks were generated from a tool and we are using them directly in the code. Therefore it is not possible to mock them without changing the code. We would need to abstract the hooks to a service and provide it to the component via props like this:
+
+```ts
+type GraphQLAttendanceService = {
+  useAllFishAndFishingGroundsQuery: // ...
+  useAddAttendanceMutation: // ....
+}
+
+type CreateAttendanceProps = {
+  graphqlService: GraphQLAttendanceService
+}
+
+const CreateAttendance: React.FC<CreateAttendanceProps> = (props) => {
+  const { error, loading, data } = props.graphqlService.useAllFishAndFishingGroundsQuery();
+  const [addAttendanceMutation] = props.graphqlService.useAddAttendanceMutation({
+    // update statistics on each successful addition
+    refetchQueries: [
+      { query: AllStatisticsDocument },
+    ]
+  });
+
+  // ...
+```
+
+Now we are able to mock the props from the testing environment by supplying our component with seemingly GraphQL Service but we know that our service will only create static, manually created data for testing purposes. One disadvantage of this approach is that we have to mock every required props dependency. Luckily, tools like Jest are able to generate mock values so we don't have to. Thanks to this our workflow will look like this:
+
+1. Extract necessary functions, object and others into props.
+2. Create mock object using a testing tool.
+3. Configure the behaviour of mocked object according to test requirements.
+4. Create tested component with supplied mock.
+5. Execute necessary tests.
+
+
+# Snapshots
+When we execute tests, testing tools can keep track of the results and compare them together. These are called snapshots. They can be used inline or stored to a file. These files should be pushed to source control to create a baseline for tests run on other machines.
+
+These tests should be deterministic for this exact reason. Having a tests that uses a randomly generated timestamp would result in failure 100% of the time. Therefore should our tests only cover cases which will give exact values on each run to ensure proper testing process.
+
+Due to their nature, snapshots tend to be more like regression tests than regular tests and should be used sparingly. The ideal scenario is to use them on parts of the project which is not changing or is not meant to change for a long time.
+
+Using snapshots can be seen in the following example:
+
+```tsx
+// using test renderer
+test('test some snapshot', () => {
+  const jsonTree = create(<MyComponent someProp={somePropMock} />).toJSON();
+  expect(jsonTree).toMatchSnapshot();
+})
+```
+
+First run never fails - there is no snapshot to compare with. It gets created and test passes. It should be stored as `__snapshots__/TestFileName.test.tsx.snap`.
+
 # Common Errors
 
 ## Error: 'MyComponent' refers to a value...
@@ -140,6 +287,28 @@ Installing test renderer via `npm i --save-dev react-test-renderer` led to secur
 > 6 high severity vulnerabilities
 
 I tried audit fix (`npm audit fix --force)` which broke the build even more, tried reinstalling dependencies but couldn't get rid of it. I will ignore it for now, since this is a sample project but it is nice to be aware. 
+
+## Refs in testing
+Refs are problematic when it comes to tests. React wrote about it in [the official docs](https://reactjs.org/blog/2016/11/16/react-v15.4.0.html#mocking-refs-for-snapshot-testing) and provided tool for mocking refs. It is sort-of impossible to initialize refs since no DOM is ever being rendered. That's why **the test below will fail.**
+
+```ts
+test('that click on checkbox toggles selected attribute', () => {
+  const { root } = create(<CatSelector cats={cats} />);
+  const catBanners = root.findAllByType(CatBanner);
+  expect(catBanners.length).toEqual(cats.length);
+
+  for (const banner of catBanners) {
+    act(() => {
+      const container = banner.findByType('ul');
+      container.props.onClick();
+    })
+
+    // ❗will never be true, because useRef hook in CatBanner will always be null ❗
+    expect(banner.props.cat.selected).toBeTruthy();
+  }
+});
+```
+
 
 TODO:
 https://app.pluralsight.com/course-player?clipId=b275895a-fbf0-4767-92f7-b32fb0959ea9
