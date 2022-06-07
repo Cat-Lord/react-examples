@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './catBanner.css'
 import CatBanner from './CatBanner'
+import SelectedCats from './SelectedCats'
 
 export type Cat = {
   name: string
@@ -35,21 +36,7 @@ const CatSelector: React.FC<CatSelectorProps> = ({ cats }) => {
           })
         }
       </div>
-      <div className='selected-cats-container'>
-        <ol>
-          {
-            selectedCats.map((selectedCat: Cat) => {
-              return (
-                <li key={selectedCat.name}>
-                  {
-                    selectedCat.dateOfBirth.toISOString() + ": " + selectedCat.name
-                  }
-                </li>
-              );
-            })
-          }
-        </ol>
-      </div>
+      <SelectedCats selectedCats={selectedCats} />
     </div>
   )
 }

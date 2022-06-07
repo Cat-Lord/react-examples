@@ -32,9 +32,14 @@ test('sample evaluation test', () => {
 ```
 
 # Writing tests
-We can use different methods to write a test. Within React itself we have access to testing APIs. The basic API is `React Testing Library` which accesses components more like objects. Below we see a sample test. 
+We can use different methods to write a test. Within React itself we have access to testing APIs. The basic API is [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) which accesses components more like objects. According to different frontend features we might split testing into these sections:
+- render tests: Check if component and its parts renders correctly with different props, values, etc.
+- events: test if component catches events and responds accordingly.
 
-`React testing library` sample test:
+
+## Render Tests
+In this section we will look at the render tets using `Jest` and `React Testing Library`. First we look at the most basic example of function component `ErrorPage` 'rendered' via direct invocation:
+
 ```ts
 import ErrorPage from "../../globalErrorHandling/ErrorPage";
 
@@ -53,7 +58,8 @@ describe('Error Page', () => {
 })
 ```
 
-Another option is React's `Test Renderer`. It resembles the component hierarchy with a little more of React's abstractions like components and `props` and a more realistic environment. Sample test:
+Another and more feasible option to render is React's `Test Renderer`. It resembles the component hierarchy with a little more of React's abstractions like components and `props`. The environment `Test Renderer` runs in acts more like a browser, so it's more suitable than pure function invocation:
+
 ```ts
 it('to have correct default option selected on render', () => {
     act(() => {
@@ -65,7 +71,7 @@ it('to have correct default option selected on render', () => {
   });
 ```
 
-Note that `Test Renderer` has some convenient functions that **wrap some of the logic we've seen** in previous example(s) and thus it's not always required to use the `act()` function.
+Note that `Test Renderer` has some convenient functions that **wrap some of the logic we've seen** in previous example(s) and thus it's not always required to use, for example, the `act()` function.
 
 
 [^1]: If our test checks whether user specified correct input OR the input has appropriate label, test failure wouldn't reveal the problem right away. On the other hand having test for input correctness will immediately reveal that the input is incorrect if the test failed.
@@ -83,6 +89,29 @@ it('should perform async test', async () => {
   await expect(Promise.resolve(1+1)).resolves.toBe(2)
 })
 ```
+
+Another method to write asynchronous tests is to use the `waitFor()` function. In case we are testing user action (like button click for example) the test will fail, because firing the click event doesn't mean that it is performed immediately and therefore the test will still compare the old value. Here is how we would use the `waitFor` function:
+
+```ts
+import { render, fireEvent, waitFor } from '@testing-library/react';
+//... other imports
+
+test("cat should be selected after clicking on cat banner", async () => {
+  const catBannerRegex = /cat-banner-(\w+)/;
+  const catSelection = render(<CatSelector cats={allInactiveCats} />);
+  const catBannerElements = catSelection.queryAllByTestId(catBannerRegex);
+
+  catBannerElements.forEach(async (element) => {
+    const catName = element.getAttribute('data-testid')?.match(catBannerRegex)?.at(1);
+    fireEvent.click(element);
+    const inputElement = catSelection.getByTestId('selected-cat-' + catName) as HTMLInputElement;
+
+    await waitFor(() => expect(inputElement.checked).toBe(true));
+  });
+});
+```
+
+This test is not ideal, because it relies on the implementation a little (expecting specific test-ids). But we can see the `forEach` loop we click each cat banner element (whatever actual HTML element it might be) but without waiting for the click to happen we wouldn't be able to ensure that respective checkbox input element is really checked. Therefore we `await` for the promise created by `waitFor`.
 
 # Common Errors
 
@@ -111,3 +140,9 @@ Installing test renderer via `npm i --save-dev react-test-renderer` led to secur
 > 6 high severity vulnerabilities
 
 I tried audit fix (`npm audit fix --force)` which broke the build even more, tried reinstalling dependencies but couldn't get rid of it. I will ignore it for now, since this is a sample project but it is nice to be aware. 
+
+TODO:
+https://app.pluralsight.com/course-player?clipId=b275895a-fbf0-4767-92f7-b32fb0959ea9
+https://app.pluralsight.com/library/courses/apollo-testing/table-of-contents
+https://app.pluralsight.com/library/courses/react-practical-start/table-of-contents
+https://app.pluralsight.com/paths/skill/building-web-applications-with-react

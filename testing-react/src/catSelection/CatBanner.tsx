@@ -23,11 +23,17 @@ const CatBanner: React.FC<CatBannerProps> = ({ cat, onChange }) => {
   }
 
   return (
-    <ul className='pointer-on-hover' onClick={toggleInclude} >
+    <ul className='pointer-on-hover' data-testid={'cat-banner-' + cat.name} onClick={toggleInclude} >
       <li>
         <h2>{cat.name}</h2>
       </li>
       <li><small>{cat.dateOfBirth.toISOString()}</small></li>
+      {
+        cat.dateOfDeath ?
+          <li><small>{cat.dateOfDeath.toISOString()}</small></li>
+          : null
+      }
+
       <li>
         <input
           className='pointer-on-hover'
