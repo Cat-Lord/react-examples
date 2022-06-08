@@ -75,6 +75,55 @@ Note that `Test Renderer` has some convenient functions that **wrap some of the 
 
 The **key difference is** that React Testing Libraries renders to DOM Nodes and Test Renderer renders to React Components.
 
+### Access to the rendered content
+As we've seen above, different ways of rendering the UI might result in a different need of access. Plain function invocation (creating component by instantiating it) allows us to access `props` and `children`.
+
+Test Renderer creates and uses `ReactTestInstance` which is similar to components with a few convenient functions to access elements. Below we see sample set of these showcased in dummy code:
+
+```tsx
+const {root } = create(<App />);
+root.find((testInstance: ReactTestInstance) => {
+  return !!testInstance.props?.checked;
+});
+root.children[0].toString()
+root.findByType(FormLabel).children.length;
+```
+
+The ultimate access to the DOM happens via `render` function and its adaptations in testing tools. This should (as already mentioned) simulate browser environment and we get lots of `get...()`, `find...()` and `query...()` available to us. This is the most flexible option in my opinion, since we can search for text practically anywhere in the document.
+
+```tsx
+const root = render(<App />);
+root.queryAllByAltText('alt-text')
+root.getByLabelText('label text');
+root.findAllByTitle(/Title \d+/);
+```
+
+Exact definitions of each type of function can be found in [the official documentation](https://testing-library.com/docs/queries/about#types-of-queries):
+
+- getBy...: Returns the matching node for a query, and throw a descriptive error if no elements match or if more than one match is found (use getAllBy instead if more than one element is expected).
+- queryBy...: Returns the matching node for a query, and return null if no elements match. This is useful for asserting an element that is not present. Throws an error if more than one match is found (use queryAllBy instead if this is OK).
+- findBy...: Returns a Promise which resolves when an element is found which matches the given query. The promise is rejected if no element is found or if more than one element is found after a default timeout of 1000ms. If you need to find more than one element, use findAllBy.
+
+### Screen for the win
+React testing library offers an amazing tool that enables us to access the DOM as describe in the most latter part of the last section. This is thanks to the `screen` component.
+
+```tsx
+import { screen } from '@testing-library/react';
+// other imports...
+
+test('app not crashing on start', async () => {
+ await act(() => {
+  createRoot(container).render(
+    <MockedProvider>
+      <App />
+    </MockedProvider>
+  )
+  })
+
+  // screen for the win 🏆
+  expect(screen.queryByText('Home')).toBeTruthy();
+});
+```
 
 [^1]: If our test checks whether user specified correct input OR the input has appropriate label, test failure wouldn't reveal the problem right away. On the other hand having test for input correctness will immediately reveal that the input is incorrect if the test failed.
 
@@ -185,6 +234,51 @@ test("clicking a catBanner should reverse cats 'selected' value", () => {
 })
 ```
 
+## Mocks
+Mocks are vicarious entities that replace actual values in our application when running in test environments. We are able to create them manually or let tools like Jest to crate them for us. They can be instantiated with random values, default values or undefined. They can also be configured after initialisation if necessary.
+
+### Mocking Apollo Client
+Apollo client instantiates and manages an `ApolloProvider`. This provider can be mocked to restrict the tests from accessing real APIs and services. A default Apollo mock can be created with `MockedProvider` without any schema mocks supplied:
+
+```tsx
+test('is not crashing on start', async () => {
+  await act(() => {
+    createRoot(container).render(
+      <MockedProvider>
+        <App />
+      </MockedProvider>
+    )
+  });
+
+  expect(screen.queryByText('Home')).toBeTruthy();
+});
+```
+
+We can manipulate the Apollo communication using mocks and supply errors if we desire so. Notice in the next example that we supply the query that results in an error and we expect our application to act accordingly. This behaviour takes some time, so we wait for the `act()` promise to resolve and then we try to target the error message:
+
+```tsx
+test('should display error when server is not accessible', async () => {
+    const mocks: MockedResponse = {
+      request: {
+        query: CheckConnectionDocument                // make this request fail
+      },
+      result: {
+        errors: [new GraphQLError('expected error')]  // with following error
+      }
+    };
+
+    await act(() => {
+      createRoot(container).render(
+        <MockedProvider mocks={[mocks]}>
+          <App />
+        </MockedProvider>
+      )
+    })
+
+    expect(screen.queryByText('Server is not accessible')).toBeTruthy();
+  });
+```
+
 ### Mocking Services
 In order to achieve proper service testing we have 2 options: 
 1. Use the service as is. This is slow and requires the service to be available at the time of testing.
@@ -240,6 +334,12 @@ Now we are able to mock the props from the testing environment by supplying our 
 4. Create tested component with supplied mock.
 5. Execute necessary tests.
 
+## Handling expected errors
+Libraries like React's `Test Renderer` provide us with an ability to get elements in the rendered tree using the `findBy...` functions. The pitfall here is that when the Test Renderer doesn't find the element we're looking for it throws an error. If not handled, our tests will fail even when we're expecting it with Jest: 
+`expect(root.findByType(Label)).toBeNull()`
+
+The proper way to handle it is to provide a callback into the expect function and that solves the problem: 
+`expect(() => root.findByType(Label)).toThrowError()`
 
 # Snapshots
 When we execute tests, testing tools can keep track of the results and compare them together. These are called snapshots. They can be used inline or stored to a file. These files should be pushed to source control to create a baseline for tests run on other machines.
@@ -278,15 +378,15 @@ Act is a function that allows us to simulate browser environment from test envir
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 ```
 
-As said in [the documentation](https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#configuring-your-testing-environment), this tells React that we are running in a test environment.
+As said in [the documentation](https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#configuring-your-testing-environment), this tells React that we are running in a test environment. If we are not able or don't want to use a test setup file, we can just set this variable inside a test like so:
 
 
-## Security Vulnerabilities in Test Renderer
-Installing test renderer via `npm i --save-dev react-test-renderer` led to security vulnerabilities:
-
-> 6 high severity vulnerabilities
-
-I tried audit fix (`npm audit fix --force)` which broke the build even more, tried reinstalling dependencies but couldn't get rid of it. I will ignore it for now, since this is a sample project but it is nice to be aware. 
+```ts
+// Some.test.ts
+beforeAll(() => {
+  (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
+});
+```
 
 ## Refs in testing
 Refs are problematic when it comes to tests. React wrote about it in [the official docs](https://reactjs.org/blog/2016/11/16/react-v15.4.0.html#mocking-refs-for-snapshot-testing) and provided tool for mocking refs. It is sort-of impossible to initialize refs since no DOM is ever being rendered. That's why **the test below will fail.**
@@ -309,9 +409,48 @@ test('that click on checkbox toggles selected attribute', () => {
 });
 ```
 
+## TypeError: Cannot read properties of undefined
+When testing components we might encounter errors (as seen in the name of this section) without much useful information. For example, using Formik's `useField` hook inside a custom component would result in this:
 
-TODO:
-https://app.pluralsight.com/course-player?clipId=b275895a-fbf0-4767-92f7-b32fb0959ea9
-https://app.pluralsight.com/library/courses/apollo-testing/table-of-contents
-https://app.pluralsight.com/library/courses/react-practical-start/table-of-contents
-https://app.pluralsight.com/paths/skill/building-web-applications-with-react
+> Test
+```tsx
+ test('input field displays along with a label', () => {
+    const labelText = "testing label text";
+    const { root } = TestRenderer.create(
+        <InputField name="sample" aria-label={labelText} />
+    );
+ });
+```
+
+> Resulting error (displayed as javascript code):
+```ts
+ // TypeError: Cannot read properties of undefined (reading 'getFieldProps')
+ 
+ const InputField: React.FC<InputFieldProps> = ({ size: _, inputSize, ...props }) => {
+ 
+  const [field, { error }] = useField(props.name);
+ //                                  ^
+ // ...
+ }
+```
+
+What does the error actually mean ? After checking that we didn't forget to pass required props we must assume that a third-party library function, component, hook or any other piece of code might have dependencies that are outside of our direct scope or even view. In this example above, `useField` needs `getFieldProps` which is supplied by the **Formik context**, which resides in `<Formik>` component. Therefore it was a mistake to test the `InputField` outside of the `Formik` container, so we need to correct our mistake:
+
+```tsx
+ test('input field displays along with a label', () => {
+    const labelText = "testing label text";
+    const { root } = TestRenderer.create(
+      <Formik onSubmit={() => { }} initialValues={{ sample: "" }}>
+        <InputField name="sample" aria-label={labelText} />
+      </Formik>
+    );
+ });
+```
+
+
+## Security Vulnerabilities in Test Renderer
+Installing test renderer via `npm i --save-dev react-test-renderer` led to security vulnerabilities:
+
+> 6 high severity vulnerabilities
+
+I tried audit fix (`npm audit fix --force)` which broke the build even more, tried reinstalling dependencies but couldn't get rid of it. I will ignore it for now, since this is a sample project but it is nice to be aware. It is important to note that this might be only relevant to this testing project, because when I tried it in the `apollo-client--snowpack-react-typescript` project, no vulnerabilities were present.
