@@ -454,3 +454,11 @@ Installing test renderer via `npm i --save-dev react-test-renderer` led to secur
 > 6 high severity vulnerabilities
 
 I tried audit fix (`npm audit fix --force)` which broke the build even more, tried reinstalling dependencies but couldn't get rid of it. I will ignore it for now, since this is a sample project but it is nice to be aware. It is important to note that this might be only relevant to this testing project, because when I tried it in the `apollo-client--snowpack-react-typescript` project, no vulnerabilities were present.
+
+TODO:
+✅ https://app.pluralsight.com/course-player?clipId=b275895a-fbf0-4767-92f7-b32fb0959ea9
+✅ https://app.pluralsight.com/course-player?clipId=924ba3c5-5261-4ac7-b6f5-e43157c986df
+✅ https://app.pluralsight.com/library/courses/apollo-testing/table-of-contents
+
+✅ https://app.pluralsight.com/library/courses/react-practical-start/table-of-contents
+https://app.pluralsight.com/paths/skill/building-web-applications-with-react
