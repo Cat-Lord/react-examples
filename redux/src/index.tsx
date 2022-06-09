@@ -1,4 +1,11 @@
 import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import App from "./app/App";
 
 const root = createRoot(document.getElementById('root')!);
-root.render(<h1>Hello, my world!</h1>);
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);

@@ -37,10 +37,10 @@ module.exports = (env) => {
           type: 'asset/resource'
         },
         // handling fonts and svg files
-        // {
-        //   test: /\.(?:woff(2)?|eof|ttf|svg|otf)$/i,
-        //   type: 'asset/inline'
-        // },
+        {
+          test: /\.(?:woff(2)?|eof|ttf|svg|otf)$/i,
+          type: 'asset/inline'
+        },
       ]
     },
 
