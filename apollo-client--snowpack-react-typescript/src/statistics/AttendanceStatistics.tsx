@@ -1,10 +1,6 @@
 import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React from 'react';
-import type { AllStatisticsQuery } from '../graphql/generated/graphql-gen';
-
-type AttendanceStatisticsProps = {
-  items: AllStatisticsQuery['allAttendanceStatistics']
-}
+import { AttendanceStatisticsProps } from '.';
 
 const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({ items }) => {
   return (
@@ -28,13 +24,13 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({ items }) =>
                   <Td isNumeric>{fishingGroundStats.totalAmount}</Td>
                   <Td isNumeric>{fishingGroundStats.totalWeight}</Td>
                 </Tr>
-              )
+              );
             })
           }
         </Tbody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};
 
-export default AttendanceStatistics
+export default AttendanceStatistics;

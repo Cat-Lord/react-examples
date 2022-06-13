@@ -1,25 +1,11 @@
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import React from 'react';
-import { Spinner, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
-import ErrorPage from '../globalErrorHandling/ErrorPage'
-import { useAllStatisticsQuery } from '../graphql/generated/graphql-gen'
-import AttendanceStatistics from './AttendanceStatistics'
-import FishingGroundStatistics from './FishingGroundStatistics'
-import FishStatistics from './FishStatistics'
+import { StatisticsDashboardProps } from '.';
+import AttendanceStatistics from './AttendanceStatistics';
+import FishingGroundStatistics from './FishingGroundStatistics';
+import FishStatistics from './FishStatistics';
 
-function StatisticsDashboard() {
-  const { error, loading, data } = useAllStatisticsQuery();
-
-  if (loading)
-    return <Spinner />;
-
-  if (error)
-    throw error;
-
-  if (data === null || data === undefined)
-    return (
-      <ErrorPage boxSize='sm' fontSize='3xl' errorMessage='No attendance statistics found' />
-    );
-
+const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({ data }) => {
   return (
     <Tabs variant={'enclosed-colored'} size={'lg'}>
       <TabList>
@@ -39,8 +25,8 @@ function StatisticsDashboard() {
           <FishStatistics items={data.allFishStatistics} />
         </TabPanel>
       </TabPanels>
-    </Tabs >
-  )
-}
+    </Tabs>
+  );
+};
 
-export default StatisticsDashboard
+export default StatisticsDashboard;

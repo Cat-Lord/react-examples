@@ -5,15 +5,15 @@ import ErrorPage from './globalErrorHandling/ErrorPage';
 import { useCheckConnectionQuery } from './graphql/generated/graphql-gen';
 import Home from './Home';
 import Navigation from './Navigation';
-import StatisticsDashboard from './statistics/StatisticsDashboard';
+import Statistics from './statistics/Statistics';
 
 interface AppProps { }
 
-function App({ }: AppProps) {
+function App ({ }: AppProps) {
   const { error } = useCheckConnectionQuery();
 
   if (error)
-    return <ErrorPage errorMessage='Server is not accessible' />
+    return <ErrorPage errorMessage='Server is not accessible' />;
 
   return (
     <BrowserRouter>
@@ -22,7 +22,7 @@ function App({ }: AppProps) {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/attendance/create" element={<CreateAttendance />} />
-        <Route path="/statistics" element={<StatisticsDashboard />} />
+        <Route path="/statistics" element={<Statistics />} />
 
         <Route path="*" element={<ErrorPage errorMessage='Page not found...' />} />
       </Routes>

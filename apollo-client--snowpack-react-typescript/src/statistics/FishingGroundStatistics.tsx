@@ -1,10 +1,6 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React from 'react';
-import type { AllStatisticsQuery } from '../graphql/generated/graphql-gen';
-
-type FishingGroundStatisticsProps = {
-  items: AllStatisticsQuery['allFishingGroundCatchStatistics']
-}
+import { FishingGroundStatisticsProps } from '.';
 
 const FishingGroundStatistics: React.FC<FishingGroundStatisticsProps> = ({ items }) => {
   return (
@@ -45,7 +41,7 @@ const FishingGroundStatistics: React.FC<FishingGroundStatisticsProps> = ({ items
                                 <Td isNumeric>{fishingGroundStats.totalAmount}</Td>
                                 <Td isNumeric>{fishingGroundStats.totalWeight}</Td>
                               </Tr>
-                            )
+                            );
                           })
                         }
                       </Tbody>
@@ -53,13 +49,13 @@ const FishingGroundStatistics: React.FC<FishingGroundStatisticsProps> = ({ items
                   </TableContainer>
                 </AccordionPanel>
               </AccordionItem>
-            )
+            );
           })
         }
       </Accordion >
     </Box>
-  )
+  );
 
-}
+};
 
-export default FishingGroundStatistics
+export default FishingGroundStatistics;

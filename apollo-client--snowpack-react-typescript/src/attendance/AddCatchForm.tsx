@@ -1,83 +1,15 @@
-import { Button, Flex, GridItem, HStack, SimpleGrid, Table, TableCaption, TableContainer, TableContainerProps, Tbody, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react'
-import { Form, useFormikContext } from 'formik'
-import React from 'react'
-import InputField from '../formComponents/InputField'
-import SelectField from '../formComponents/SelectField'
-import type { Fish, NewCatch } from '../graphql/generated/graphql-gen'
-
-type AddCatchFormProps = TableContainerProps & {
-  allFish: Fish[]
-  catches: NewCatch[]
-  setCatches: React.Dispatch<React.SetStateAction<NewCatch[]>>   // use state setter function
-  isSubmitting?: boolean
-}
-
-type FormValues = {
-  selectedFish: string;
-  caughtFishAmount: number;
-  caughtFishTotalWeight: number;
-}
+import { Button, Flex, GridItem, HStack, SimpleGrid, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react';
+import { Form } from 'formik';
+import React, { useContext } from 'react';
+import { AddCatchFormProps, AttendanceContextProps } from '.';
+import InputField from '../formComponents/InputField';
+import SelectField from '../formComponents/SelectField';
+import type { Fish, NewCatch } from '../graphql/generated/graphql-gen';
+import { AttendanceContext } from './CreateAttendance';
 
 
-const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatches, isSubmitting, ...props }) => {
-  const context = useFormikContext<any>();
-
-  const addNewCatch = (newCatch: FormValues) => {
-    const fish = catches.find((currentCatch) => currentCatch.fishID === newCatch.selectedFish)
-
-    if (fish) {
-      // update catch
-      fish.totalAmount = newCatch.caughtFishAmount;
-      fish.totalWeight = newCatch.caughtFishTotalWeight;
-
-      const catchArray: NewCatch[] = []
-      catches.map((currentCatch: NewCatch) => {
-        if (currentCatch.fishID === newCatch.selectedFish)
-          catchArray.push(fish)
-        else
-          catchArray.push(currentCatch)
-      })
-
-      setCatches(catchArray);
-    }
-    else {
-      // insert new row record
-      setCatches(catches.concat({
-        fishID: newCatch.selectedFish,
-        totalAmount: newCatch.caughtFishAmount,
-        totalWeight: newCatch.caughtFishTotalWeight
-      }));
-    }
-  }
-
-  const resetCatchForm = () => {
-    context.setFieldValue("selectedFish", allFish[0].id);
-    context.setFieldValue("caughtFishAmount", 0);
-    context.setFieldValue("caughtFishTotalWeight", 0.0);
-  }
-
-  const handleIntermediateSubmit = async (event: React.MouseEvent<HTMLElement>) => {
-    const { selectedFish, caughtFishAmount, caughtFishTotalWeight } = context.values;
-
-    if (caughtFishAmount === 0)
-      return;
-
-    const values: FormValues = {
-      selectedFish: selectedFish,
-      caughtFishAmount: caughtFishAmount,
-      caughtFishTotalWeight: caughtFishTotalWeight
-    };
-
-    const errs = await context.validateForm(values);
-
-    const hasErrors = errs === undefined;
-    if (hasErrors === false) {
-      addNewCatch(values);
-      resetCatchForm();
-    }
-
-    event.preventDefault(); // stop from propagating the submit to the parent form
-  }
+const AddCatchForm: React.FC<AddCatchFormProps> = (props) => {
+  const attendanceContext = useContext<AttendanceContextProps>(AttendanceContext);
 
   return (
     <Form>
@@ -86,7 +18,7 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
           <SelectField
             name='selectedFish'
             aria-label='Select Fish'
-            items={allFish}
+            items={attendanceContext.allFish}
             selectSize={'sm'}
             getKey={(fish: Fish) => fish.id}
             getValue={(fish: Fish) => fish.id + ": " + fish.name}
@@ -128,9 +60,9 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
                 justifyContent={'flex-end'}
               >
                 <Button
-                  disabled={isSubmitting}
+                  disabled={props.isSubmitting}
                   type='submit'
-                  onClick={handleIntermediateSubmit}
+                  onClick={props.addCatchToTable}
                   size='lg'
                   border='1px'
                   borderColor='grey.100'
@@ -142,7 +74,7 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
           </SimpleGrid>
         </VStack>
 
-        <TableContainer {...props} overflowY={'scroll'} >
+        <TableContainer overflowY={'scroll'} >
           <Table overflowY={'scroll'} variant={'striped'}>
             <TableCaption m={0} placement='top'>Catches</TableCaption>
 
@@ -155,8 +87,8 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
             </Thead>
             <Tbody>
               {
-                catches.map((newCatch: NewCatch) => {
-                  const fish = allFish.find((currentFish) => currentFish.id === newCatch.fishID);
+                attendanceContext.catches.map((newCatch: NewCatch) => {
+                  const fish = attendanceContext.allFish.find((currentFish: Fish) => currentFish.id === newCatch.fishID);
                   if (fish == undefined)
                     return null;
                   return (
@@ -165,7 +97,7 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
                       <Td isNumeric>{newCatch.totalAmount}</Td>
                       <Td isNumeric>{newCatch.totalWeight}</Td>
                     </Tr>
-                  )
+                  );
                 })
               }
             </Tbody>
@@ -173,7 +105,7 @@ const AddCatchForm: React.FC<AddCatchFormProps> = ({ allFish, catches, setCatche
         </TableContainer>
       </HStack>
     </Form >
-  )
-}
+  );
+};
 
-export default AddCatchForm
+export default AddCatchForm;

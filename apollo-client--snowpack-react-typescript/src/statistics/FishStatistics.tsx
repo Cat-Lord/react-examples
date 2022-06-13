@@ -1,10 +1,6 @@
 import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React from 'react';
-import type { AllStatisticsQuery } from '../graphql/generated/graphql-gen';
-
-type FishStatisticsProps = {
-  items: AllStatisticsQuery['allFishStatistics']
-}
+import { FishStatisticsProps } from '.';
 
 const FishStatistics: React.FC<FishStatisticsProps> = ({ items }) => {
   return (
@@ -26,13 +22,13 @@ const FishStatistics: React.FC<FishStatisticsProps> = ({ items }) => {
                   <Td isNumeric>{fishStats.totalAmount}</Td>
                   <Td isNumeric>{fishStats.totalWeight}</Td>
                 </Tr>
-              )
+              );
             })
           }
         </Tbody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};
 
-export default FishStatistics
+export default FishStatistics;

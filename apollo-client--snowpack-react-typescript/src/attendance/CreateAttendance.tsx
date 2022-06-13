@@ -1,33 +1,23 @@
-import type { ErrorResponse } from '@apollo/client/link/error';
-import { Box, Button, HStack, Spinner, useToast } from '@chakra-ui/react';
-import { Form, Formik, FormikErrors, FormikHelpers } from 'formik';
-import React, { useState } from 'react';
-import type { Attendance } from '.';
-import InputField from '../formComponents/InputField';
-import SelectField from '../formComponents/SelectField';
-import { AllStatisticsDocument, FishingGround, NewCatch, useAddAttendanceMutation, useAllFishAndFishingGroundsQuery } from '../graphql/generated/graphql-gen';
-import AddCatchForm from './AddCatchForm';
-import NewAttendances from './NewAttendances';
+import { ErrorResponse } from '@apollo/client/link/error';
+import { useToast, Spinner } from '@chakra-ui/react';
+import { FormikHelpers, FormikErrors } from 'formik';
+import React, { createContext, useState } from 'react';
+import { Attendance, AttendanceContextProps, AttendanceFormValues } from '.';
+import { useAllFishAndFishingGroundsQuery, useAddAttendanceMutation, AllStatisticsDocument, NewCatch } from '../graphql/generated/graphql-gen';
+import CreateAttendanceForm from './CreateAttendanceForm';
 
-type FormValues = {
-  selectedFishingGround: string
-  numberOfVisits: number
-
-  // add catch form
-  selectedFish: string
-  caughtFishAmount: number
-  caughtFishTotalWeight: number
-}
-
+export const AttendanceContext = createContext<AttendanceContextProps>(null!);    // default props not important but required
 
 const CreateAttendance: React.FC = () => {
   const { error, loading, data } = useAllFishAndFishingGroundsQuery();
+  const { allFish, allFishingGround } = { ...data };
   const [addAttendanceMutation] = useAddAttendanceMutation({
     // update statistics on each successful addition
     refetchQueries: [
       { query: AllStatisticsDocument },
     ]
   });
+
   const [attendances, setAttendances] = useState<Attendance[]>([]);
   const [catches, setCatches] = useState<NewCatch[]>([]);
   const toast = useToast();
@@ -38,34 +28,23 @@ const CreateAttendance: React.FC = () => {
   if (error)
     throw error;
 
-  if (data === undefined || data.allFishingGround === undefined || data.allFishingGround === null)
+  if (data === undefined || allFishingGround === undefined || allFish === undefined)
     throw new Error('Unable to load Fishing Grounds, data undefined');
 
 
-  const { allFish, allFishingGround } = data;
-  const formInitialValues: FormValues = {
-    selectedFishingGround: allFishingGround[0].id ?? '',
-    numberOfVisits: 0,
-
-    // add catch form
-    selectedFish: allFish[0].id ?? '',
-    caughtFishAmount: 0,
-    caughtFishTotalWeight: 0.0
-  };
-
-  const createNewAttendance = (values: FormValues): Attendance => {
+  const createNewAttendance = (values: AttendanceFormValues): Attendance => {
     const { selectedFishingGround, numberOfVisits } = values;
     const fishingGround = allFishingGround.find((ground) => ground.id === selectedFishingGround);
     return {
       fishingGround: fishingGround!,
       numberOfVisits: numberOfVisits,
       catches: catches
-    }
-  }
+    };
+  };
 
   // Replace attendance if it was already added, otherwise add it
   const updateAttendancesArray = (newAttendance: Attendance): void => {
-    const allAttendances: Attendance[] = []
+    const allAttendances: Attendance[] = [];
 
     let added = false;
     attendances.forEach(att => {
@@ -81,9 +60,9 @@ const CreateAttendance: React.FC = () => {
       allAttendances.push(newAttendance);
 
     setAttendances(allAttendances);
-  }
+  };
 
-  const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
+  const handleSubmit = async (values: AttendanceFormValues, actions: FormikHelpers<AttendanceFormValues>): Promise<void> => {
     const newAttendance: Attendance = createNewAttendance(values);
 
     await addAttendanceMutation({
@@ -111,10 +90,10 @@ const CreateAttendance: React.FC = () => {
     updateAttendancesArray(newAttendance);
     setCatches([]);
     actions.resetForm();
-  }
+  };
 
-  const validate = (values: FormValues) => {
-    const errors: FormikErrors<FormValues> = {}
+  const validate = (values: AttendanceFormValues): FormikErrors<AttendanceFormValues> | undefined => {
+    const errors: FormikErrors<AttendanceFormValues> = {};
 
     // visits must be > 0
     if (values.numberOfVisits <= 0)
@@ -138,69 +117,25 @@ const CreateAttendance: React.FC = () => {
       return undefined;
 
     return errors;
-  }
+  };
 
+
+  const contextValues: AttendanceContextProps = {
+    allFish: allFish,
+    allFishingGround: allFishingGround,
+    catches: catches,
+    setCatches: setCatches
+  };
 
   return (
-    <HStack p={7} spacing={69} h='100%' alignItems={'flex-start'} position={'relative'}>
-      <Formik
-        initialValues={formInitialValues}
-        onSubmit={handleSubmit}
-
-        validateOnChange={false}  // only validate when submitting
-        validateOnBlur={false}
+    <AttendanceContext.Provider value={contextValues} >
+      <CreateAttendanceForm
+        attendances={attendances}
+        handleSubmit={handleSubmit}
         validate={validate}
-      >
-        {({ isSubmitting }) => (
-          <Box position={'relative'}>
-            <Form>
-              <SelectField
-                name='selectedFishingGround'
-                aria-label='Fishing Ground Selection'
-                items={data.allFishingGround}
-                getKey={(fishingGround: FishingGround) => fishingGround.id}
-                getValue={(fishingGround: FishingGround) => fishingGround.code + ": " + fishingGround.label}
-                width='35%'
-              />
-              <InputField
-                name='numberOfVisits'
-                type={'number'}
-                placeholder='number of visits'
-                aria-label='Number of visits'
-                width='10%'
-                required
-              />
+      />
+    </AttendanceContext.Provider>
+  );
+};
 
-              <Button
-                disabled={isSubmitting}
-                position='absolute'
-                bottom={0}
-                right={0}
-                type='submit'
-                height='48px'
-                width='200px'
-                border='2px'
-                borderColor='grey.500'
-              >
-                Add
-              </Button>
-            </Form>
-
-            {/* <Divider p={3} /> */}
-
-            <AddCatchForm
-              isSubmitting={isSubmitting}
-              allFish={data.allFish}
-              catches={catches}
-              setCatches={setCatches}
-            />
-          </Box>
-        )}
-      </Formik>
-
-      <NewAttendances minW={'md'} maxH='' attendances={attendances} />
-    </HStack>
-  )
-}
-
-export default CreateAttendance
+export default CreateAttendance;
