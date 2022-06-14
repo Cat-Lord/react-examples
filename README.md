@@ -93,3 +93,14 @@ Using:
 - React test tools
 - Jest
 - Typescript
+
+## redux
+As the title says - sample react project demonstrating redux usage in react. I was following a `React with Redux` tutorial on pluralsight and tried to implement some solutions on my own diverging from the original.
+
+Used:
+- based on my existing project `react-typescript-webpack-project` structure
+  - React
+  - Typescript
+  - Webpack
+  - Babel
+- Redux

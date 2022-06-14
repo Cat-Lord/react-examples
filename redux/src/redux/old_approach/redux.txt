@@ -1,0 +1,42 @@
+import { combineReducers } from 'redux';
+import { courseReducer } from './courseReducers';
+
+export const createCourse = (course: Course): CourseAction => {
+  return {
+    type: ActionType.ADD_COURSE,
+    course
+  };
+};
+
+import type { Course } from '../types';
+import { ActionType, CourseAction } from '../types/index';
+
+export const courseReducer = (state: ReduxState = { courses: [] }, action: CourseAction) => {
+  switch (action.type) {
+    case ActionType.ADD_COURSE:
+      return [
+        ...state.courses,
+        action.course
+      ];
+    default:
+      return state.courses;
+  }
+};
+
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { courseReducer } from './reducers/courseReducers';
+import CourseSlice from './slices/courseSlice';
+
+const rootReducer = combineReducers({
+  courses: courseReducer
+});
+
+const store = configureStore({
+  reducer: {
+    courses: rootReducer
+  }
+});
+
+export type ReduxStore = ReturnType<typeof store.getState>;
+
+export default store; 

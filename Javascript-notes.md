@@ -1,5 +1,20 @@
 # Basics
 
+## Objects
+Object Shorthand Syntax allows us to create objects without the need of specifying name of all assigned values:
+
+```js
+// without
+function createObject(value) {
+  return { type: "some type", value: value};
+}
+
+// with
+function createObject(value) {
+  return { type: "some type", value };  // value will be assigned and accessible via 'value' property
+}
+```
+
 ## Nullish Coalescing
 When we need to check for nullish values, we can write an if statement, or we can use the short-hand form:
 
