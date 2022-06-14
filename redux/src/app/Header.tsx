@@ -1,17 +1,8 @@
 import React from 'react';
-import { Nav } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
-type HeaderProps = {
 
-};
-
-const Header: React.FC<HeaderProps> = (props) => {
-  const isActive = false;
-
-  const isActiveProp = (isActive: boolean): string => {
-    return 'navlink' + isActive ? '-active' : '';
-  };
+const Header: React.FC = () => {
 
   return (
     <nav className='header'>
@@ -20,6 +11,13 @@ const Header: React.FC<HeaderProps> = (props) => {
         className={({ isActive }) => "nav-link" + (isActive ? "-active" : "")}
       >
         Home
+      </NavLink>
+
+      <NavLink
+        to="/courses"
+        className={({ isActive }) => "nav-link" + (isActive ? "-active" : "")}
+      >
+        Courses
       </NavLink>
 
       <NavLink

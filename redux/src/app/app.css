@@ -1,5 +1,5 @@
-#app {
-  max-width: 850px;
+#root {
+  width: 90rem;
   margin: 0 auto;
 }
 
@@ -8,12 +8,13 @@ nav {
   display: flex;
   direction: row;
   align-items: center;
+  justify-items: flex-start;
+  gap: 11px;
 }
 
 .jumbotron {
   display: flex;
   flex-direction: column;
-  width: 80rem;
   padding: 25px;
   background-color: rgb(220, 220, 220);
   border-radius: 30px;
