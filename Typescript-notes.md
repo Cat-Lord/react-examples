@@ -98,6 +98,27 @@ Or for example function without return value:
   }
 ```
 
+There is a little cumbersome approach to defining destructured object types. Imagine the scenario, when we expect complex object but need only a few of its properties. We would need to write something like `get({prop1, prop2})`. Now to assign the types, we need to do this:
+
+```ts
+function get({ prop1, prop2 }: { prop1: string, prop2: number}) {
+  // ...
+}
+```
+
+To make our lives a little easier, it is possible to define the types separately for a cleaner implementation:
+
+```ts
+type GetProps = {
+  prop1: string
+  prop2: number
+}
+
+function get({ prop1, prop2 }: GetProps) {
+  // ...
+}
+```
+
 ## Objects and custom types
 We can create and assign custom types. Types can have any value.
 

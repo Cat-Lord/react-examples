@@ -1,16 +1,34 @@
 import React from 'react';
-import { Form, FormLabel } from 'react-bootstrap';
+import { useStoreSelector } from '../redux/reduxHooks';
+import type { Course } from '../types/index';
+import AddCourse from './AddCourse';
 
-type CoursePageProps = {
+const CoursePage: React.FC = () => {
+  const { courses } = useStoreSelector((store) => store.courses);
 
-};
+  let coursesElement: JSX.Element;
+  if (courses.length === 0)
+    coursesElement = <h3>No courses found</h3>;
+  else
+    coursesElement = courses.map((course: Course) => {
+      return (
+        <h2 key={course.title}>{course.title}</h2>
+      );
+    });
 
-const CoursePage: React.FC<CoursePageProps> = (props) => {
   return (
-    <Form onSubmit={(e: any) => console.log(e)}>
-      <FormLabel htmlFor="submit-input">Add Course</FormLabel>
-      <input name="submit-input" type="submit" value="Save" />
-    </Form>
+    <main>
+      <div>
+        <h1>Courses</h1>
+
+        <AddCourse />
+      </div>
+      <section>
+        {
+          coursesElement
+        }
+      </section>
+    </main>
   );
 };
 

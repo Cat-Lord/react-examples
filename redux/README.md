@@ -458,6 +458,58 @@ The `options` parameter can determine the requirements to run the `payloadCreato
 
 [^3]: `nanoid` generates non-cryptographically-secure random ID strings. It shouldn't be used when security is important.
 
+## Typescript Support
+As seen in [this video](https://www.youtube.com/watch?v=SM3uwYgGxNE), there are several handy ways we can utilize typescript inside a Redux project (RTK specifically). Slices are a cool way to keep things separated and therefore offer a nice way of separating concerns. We should be able to define state as our own type and assign it to the slice:
+
+```ts
+type InitialState = {
+  prop1: type1
+  prop2: type2
+  // ...
+}
+
+const slice = createSlice({
+  name: 'someSlice',
+  initialState: initialState,
+  // ...
+})
+```
+
+Reducers can obtain state as well as actions. Actions are of the type `PayloadAction` from RTK. They should receive a generic that describes the payload type:
+
+```ts
+const slice = createSlice({
+  // ...,
+  reducers: {
+    addCourse: (state, action: PayloadAction<Course>) => {
+      state.courses.push(action);
+    }
+  }
+})
+```
+
+### Dispatching and Selectors
+It is convenient to enrich the types of `useDispatch` and `useSelector` with our own types. They are not really easy to deduce from the code therefore we will use a utility functions of javascript and typescript, namely `typeof` and `ReturnType<Type>`.
+
+With types in place we can create custom hooks that will be used throughout the application. We must be careful to make sure that they are known to the whole development team.
+
+```ts
+import { Dispatch } from "react";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import reduxStore from "./createReduxStore";
+
+export type ReduxStore = ReturnType<typeof reduxStore.getState>;
+export type AppDispatch = typeof reduxStore.dispatch;
+
+// Don't use raw 'useSelector' or raw 'useDispatch'
+export const useStoreSelector: TypedUseSelectorHook<ReduxStore> = useSelector;
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+```
+
+Now we don't even have to use the state types with these functions. We have type safety with:
+- selectors: Using `useStoreSelector((store) => store.notWorking);` will throw error that there is no `notWorking`property
+- dispatches: Dispatching incorrect action payload like `dispatch(addCourse('4'))` will throw an error
+
 ## Major Gotcha's
 
 ### Naming Convention

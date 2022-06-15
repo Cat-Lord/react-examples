@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { Course } from "../../types/index.d";
-import { ReduxStore } from "../createReduxStore";
+import { Course } from "../../types/index";
+import { ReduxStore } from "../index";
 
 type CourseSliceState = {
   courses: Course[];
@@ -15,13 +15,13 @@ const CourseSlice: Slice = createSlice({
   initialState,
   reducers: {
     addCourse: (store: ReduxStore, action: PayloadAction<Course>) => {
-      store.courses.push(action);
+      store.courses.push(action.payload);
     }
 
   }
 });
 
-export const coursesSelector = (state: any) => {
+export const coursesSelector = (state: ReduxStore) => {
   return state.courses;
 };
 
