@@ -6,25 +6,32 @@
   "scripts": {
     "start": "webpack serve --config webpack/webpack.config.js --env environment=dev",
     "debug": "webpack serve --config webpack/webpack.config.js --env environment=dev debug --stats-error-details",
-    "build": "webpack --config webpack/webpack.config.js --env environment=prod  &&  npx serve build/"
+    "build": "webpack --config webpack/webpack.config.js --env environment=prod  &&  npx serve build/",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "jest-environment-jsdom": "^28.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ts-node": "^10.8.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.5",
-    "@babel/preset-env": "^7.16.11",
+    "@babel/core": "^7.18.5",
+    "@babel/preset-env": "^7.18.2",
     "@babel/preset-react": "^7.16.7",
-    "@babel/preset-typescript": "^7.16.7",
+    "@babel/preset-typescript": "^7.17.12",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
+    "@testing-library/react": "^13.3.0",
+    "@types/jest": "^28.1.1",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.13",
+    "babel-jest": "^28.1.1",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.7.0",
     "html-webpack-plugin": "^5.5.0",
+    "jest": "^28.1.1",
     "react-refresh": "^0.11.0",
     "style-loader": "^3.3.1",
     "typescript": "^4.6.2",

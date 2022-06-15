@@ -4,7 +4,7 @@ React is a frontend library, therefore it is difficult to pinpoint specific area
 # Tools
 There may be many tools that are available for us to use. We need to supply a testing framework. React provides [testing API](https://reactjs.org/docs/testing.html) which handles access to components - children, props, etc. We can see the mapping in the following figure.
 
-![React Component Structure][1]
+![React Component Structure](../.markdown/react-component-data-structure.png)
 
 There are many tools like [Jest](https://jestjs.io/), [mocha](https://mochajs.org/), [ava](https://github.com/avajs/ava). We could also consider other tools like [Storybook](https://storybook.js.org/) which are not necessarily designed for testing but offer great flexibility and allow us to isolate components in such way we can inspect them (much like exploratory testing).
 
@@ -93,16 +93,19 @@ The ultimate access to the DOM happens via `render` function and its adaptations
 
 ```tsx
 const root = render(<App />);
+console.log(root.debug());
+
 root.queryAllByAltText('alt-text')
 root.getByLabelText('label text');
 root.findAllByTitle(/Title \d+/);
 ```
 
-Exact definitions of each type of function can be found in [the official documentation](https://testing-library.com/docs/queries/about#types-of-queries):
+### Using the 'findBy...' 'queryBy...' and 'getBy...' functions
+Notice that in the example above we use the a `root.debug()` which is a utility function that prints the HTML concent of the rendered variable. It's kinda neat for debugging if we're expecting values in testing but are not able to get them via the aforementioned methods. Exact definitions of each type of function can be found in [the official documentation](https://testing-library.com/docs/queries/about#types-of-queries):
 
-- getBy...: Returns the matching node for a query, and throw a descriptive error if no elements match or if more than one match is found (use getAllBy instead if more than one element is expected).
-- queryBy...: Returns the matching node for a query, and return null if no elements match. This is useful for asserting an element that is not present. Throws an error if more than one match is found (use queryAllBy instead if this is OK).
-- findBy...: Returns a Promise which resolves when an element is found which matches the given query. The promise is rejected if no element is found or if more than one element is found after a default timeout of 1000ms. If you need to find more than one element, use findAllBy.
+- `getBy...()`: Returns the matching node for a query, and throw a descriptive error if no elements match or if more than one match is found (use getAllBy instead if more than one element is expected).
+- `queryBy...()`: Returns the matching node for a query, and return null if no elements match. This is useful for asserting an element that is not present. Throws an error if more than one match is found (use queryAllBy instead if this is OK).
+- `findBy...()`: Returns a Promise which resolves when an element is found which matches the given query. The promise is rejected if no element is found or if more than one element is found after a default timeout of 1000ms. If you need to find more than one element, use findAllBy.
 
 ### Screen for the win
 React testing library offers an amazing tool that enables us to access the DOM as describe in the most latter part of the last section. This is thanks to the `screen` component.
@@ -113,11 +116,11 @@ import { screen } from '@testing-library/react';
 
 test('app not crashing on start', async () => {
  await act(() => {
-  createRoot(container).render(
-    <MockedProvider>
-      <App />
-    </MockedProvider>
-  )
+    createRoot(container).render(
+      <MockedProvider>
+        <App />
+      </MockedProvider>
+    )
   })
 
   // screen for the win 🏆
@@ -125,9 +128,20 @@ test('app not crashing on start', async () => {
 });
 ```
 
+Nevertheless, we have to be careful about the functions we use when rendering, since `render` is a common word within the React environment. Using the `render` function from React Testing Library we immediately obtain an object that is capable of using functions we otherwise tried to obtain from the `screen`:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import App from '../app/App';
+
+it('should render title on start', () => {
+  const root = render(<App />);
+  expect(screen.findByText(/administration/i)).toBeDefined();
+});
+```
+
 [^1]: If our test checks whether user specified correct input OR the input has appropriate label, test failure wouldn't reveal the problem right away. On the other hand having test for input correctness will immediately reveal that the input is incorrect if the test failed.
 
-[1]:../.markdown/react-component-data-structure.png
 
 ## Testing Events
 Events can be tested on prop functions passed to the component. We need to use mocks to be able to detect any invocations, argument parsing, return value validation and others. Therefore we will use Jets' `jest.fn()`. We can supply default implementation to this `fn` function or even hard-code values that the function will return:

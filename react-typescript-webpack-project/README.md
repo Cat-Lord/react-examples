@@ -98,6 +98,33 @@ Running in production mode yields:<br>
 Using webpack chunk optimization we get this final result:<br>
 `Transferred 1.87 KB (2.76 KB size)` 🤯<br>
 
+## Testing
+To enable testing there are a few libraries for us to choose from. Here I will demonstrate [Jest](https://jestjs.io/docs/getting-started) usage and incorporate it into the project.
+
+1. Install Jest.
+   1. `npm i --save-dev jest`
+   2. `npm i --save-dev @types/jest`
+   3. Babel dependencies: `npm i --save-dev babel-jest @babel/core @babel/preset-env`
+2. Configure Jest
+   1. Basic Configuration: `jest --init` (adjust configuration if necessary)
+      1. ✔ Would you like to use Jest when running "test" script in "package.json"? … yes
+      2. ✔ Would you like to use Typescript for the configuration file? … yes
+      3. ✔ Choose the test environment that will be used for testing › jsdom (browser-like)
+      4. ✔ Do you want Jest to add coverage reports? … no
+      5. ✔ Which provider should be used to instrument code for coverage? › babel
+      6. ✔ Automatically clear mock calls, instances, contexts and results before every test? … no
+   2. Install additional required dependencies like `jsdom` environment
+      1. `npm i jest-environment-jsdom`
+   3. Create file structure and [configure mocks](https://jestjs.io/docs/webpack):
+      1. `src/tests/__mocks__/`
+         1. `styleMock.ts`
+         2. `fileMock.ts`
+      2. Add mock information into the Jest config file.
+3. Install a testing library.
+   1. `npm i --save-dev @testing-library/react`
+
+In order to use typescript for jest configuration file, we must install `ts-node` via `npm i ts-node`. Mocks that we created in steps 2.3.* will be picked up automatically by jest and supplied to the rendered components.
+
 ## Optional extra's
 These few extras are good when working with a team or provide additional but not essential tools:
 - ESlint: Analyzes code and searches for errors. Logical (infinite loop), syntactical, unused code, missing declarations, ...
