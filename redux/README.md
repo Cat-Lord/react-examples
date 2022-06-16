@@ -161,6 +161,23 @@ const logger = (store) => (next) => (action) => {
 }
 ```
 
+With the integration of Typescript we can utilize Redux'  `Middleware` type but we have to do a little bit of magic to enable all features. Notice that we supply generics for the `PayloadAction` to obtain its optional `meta`.
+
+```ts
+const storeCatFact: Middleware<
+    {},           // Most middleware do not modify the dispatch return value
+    ReduxStore    // our store type
+  > = (storeApi) => (next) => (action: PayloadAction<CatFact, any, any>) => {
+
+  if (action.meta.requestStatus === 'fulfilled' )
+    storeApi.dispatch(storeFact(action.payload));
+
+  // continue with the next middleware (otherwise we would hang the execution !)
+  next(action);
+};
+```
+
+
 [^2]: Currying is a process of chaining operations and refers to a mathematical term.
 
 ## Creating and configuring the store
@@ -458,6 +475,51 @@ The `options` parameter can determine the requirements to run the `payloadCreato
 
 [^3]: `nanoid` generates non-cryptographically-secure random ID strings. It shouldn't be used when security is important.
 
+### Asynchronous execution revisited
+We've seen that we can use tools like `thunk` to make API calls. RTK takes this a step further and introduces [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) that separates the API from code. We need to create a special API object (which is converted to a slice behind the scenes) with the `createApi` function:
+
+```tsx
+// sample implementation
+export const catFactApi = createApi({
+  reducerPath: "catApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://cat-fact.herokuapp.com/" }),
+  endpoints: (builder) => ({
+
+    getCatFact: builder.query<CatFact, void>({
+
+      // utilize this endpoint to get a random cat fact
+      query: () => '/facts/random',
+
+      // handle the result and pick only relevant values
+      transformResponse: (data: CatFactApiModel, _meta, _args) => {
+        const fact: CatFact = {
+          text: data?.text ?? '',
+          updatedAt: data?.updatedAt ?? new Date().toDateString()
+        };
+
+        return fact;
+      }
+    })
+  })
+});
+```
+
+We then need to add this api to our execution chain as a middleware and also register its reducer. It is important that the api created with `createApi` will have unique name that is specified via the `reducerPath` property:
+
+```tsx
+const reduxStore: Store = configureStore({
+  reducer: {
+    // our traditional reducers
+    courses: CourseSlice,
+    catFacts: CatFactSlice,
+    // registering API reducer with **unique**
+    [catFactApi.reducerPath]: catFactApi.reducer
+  },
+  // RTK has some middleware by default for convenience
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(catFactApi.middleware)
+});
+```
+
 ## Typescript Support
 As seen in [this video](https://www.youtube.com/watch?v=SM3uwYgGxNE), there are several handy ways we can utilize typescript inside a Redux project (RTK specifically). Slices are a cool way to keep things separated and therefore offer a nice way of separating concerns. We should be able to define state as our own type and assign it to the slice:
 
@@ -479,7 +541,7 @@ Reducers can obtain state as well as actions. Actions are of the type `PayloadAc
 
 ```ts
 const slice = createSlice({
-  // ...,
+  // ...
   reducers: {
     addCourse: (state, action: PayloadAction<Course>) => {
       state.courses.push(action);

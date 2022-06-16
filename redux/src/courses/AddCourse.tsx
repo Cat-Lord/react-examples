@@ -20,7 +20,6 @@ const AddCourse: React.FC = () => {
   return (
     <div>
       <form onSubmit={(e: any) => {
-        console.log('submitting ' + courseLabel);
         dispatch(
           addCourse(
             createCourse(courseLabel)

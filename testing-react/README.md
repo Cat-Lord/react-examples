@@ -1,12 +1,70 @@
 # Testing React
 React is a frontend library, therefore it is difficult to pinpoint specific areas to test in a React application. Most logic to be tested is usually in the backend which then only provides React with data. It is essential to decide on what is and what is not suitable for testing.
 
+## Tip for Components
+If we are using a library like Redux we might encounter a problem where we are not able to test a component without a Redux `Provider` because the component gets usually exported like this:
+
+```tsx
+const MyComponent: React.Component = () => {
+  // ...
+}
+
+// connect() is a redux function that supplies redux' state to our component
+export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+```
+
+In this case we have two options:
+
+1. Mock the required service our component depends on.
+2. Return pure service for the sake of testing.
+
+While solution 1 seems to be the correct solution, it can be time consuming or complex to achieve. If we need to use the solution 2, we can just rename our component and `export` it via named export:
+
+```tsx
+const MyComponent: React.Component = () => {
+  // ...
+}
+
+// connect() is a redux function that supplies redux' state to our component
+export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+export const MyPureComponent = MyComponent;
+```
+
+It is up to us to decide on how the component should be named. I wouldn't advise using the same name for export because we can get cryptic errors when accidentally mixing the imports up:
+
+```tsx
+// Export the component
+export const MyComponent: React.Component = () => {
+  // ...
+}
+// as well as the dependant version of it
+export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+
+
+// somewhere.tsx
+import { MyComponent } from 'confusion/MyComponent';
+
+// ... wait, what happened, why does it not work ?
+```
+
 # Tools
 There may be many tools that are available for us to use. We need to supply a testing framework. React provides [testing API](https://reactjs.org/docs/testing.html) which handles access to components - children, props, etc. We can see the mapping in the following figure.
 
 ![React Component Structure](../.markdown/react-component-data-structure.png)
 
-There are many tools like [Jest](https://jestjs.io/), [mocha](https://mochajs.org/), [ava](https://github.com/avajs/ava). We could also consider other tools like [Storybook](https://storybook.js.org/) which are not necessarily designed for testing but offer great flexibility and allow us to isolate components in such way we can inspect them (much like exploratory testing).
+There are many tools like [Jest](https://jestjs.io/), [mocha](https://mochajs.org/), [ava](https://github.com/avajs/ava) or [enzyme](https://enzymejs.github.io/enzyme/). React also has it's own utilities for testing called [test utils](https://reactjs.org/docs/test-utils.html) and a [test renderer](https://reactjs.org/docs/test-renderer.html) which renders hierarchical structure as pure javascript objects (similar to DOM). [React testing library](https://testing-library.com/docs/react-testing-library/intro) is a flexible alternative even for non-react projects. 
+
+We could also consider other tools like [Storybook](https://storybook.js.org/) which are not necessarily designed for testing but offer great flexibility and allow us to isolate components in such way we can inspect them (much like exploratory testing).
+
+Using these libraries can be sometimes confusing and even the names are sometimes similar. We can view it like this:
+
+- `Jest` is a test runner. It lets us create and run tests and works with many other testing libraries. It is the testing environment.
+- `mocha`, `enzyme`, `react testing library` or `test utils` let us somehow instantiate and access components[^2] and therefore enable test evaluation (without them we wouldn't have anything to test).
+  - `react testing library` focuses on what the user sees. It has a `render` function which creates an instance on which we can search for visual elements like texts, titles, alt-texts, placeholders and others. It deviates from the usage of IDs, HTML types and such, because it tries to avoid implementation details.
+  - React's `test-renderer` is just a rendering tool which simulates rendering (not the actual DOM). Working with it feels like using a dynamic React execution environment where we can render, mount/unmount and query components based on their types, props, parent, children, etc.
+  - `enzyme` is similar to `react testing library` and offers different types of render functions (a shallow or a full render). It let's us locate elements with the JQuery style search functions (`find('h1')`, `find('#root')`, `find('.link')`).
+  
+[^2]: The differences make the advantages and disadvantages of each tool.
 
 ## StoryBook
 Visual tool that helps us create a toolbox of our React components. It allows us to render components in isolation with different default values and attributes. We then access Storybook and manually verify the rendered components and intended interaction.
@@ -71,7 +129,7 @@ it('to have correct default option selected on render', () => {
   });
 ```
 
-Note that `Test Renderer` has some convenient functions that **wrap some of the logic we've seen** in previous example(s) and thus it's not always required to use, for example, the `act()` function.
+Note that Test Renderer has some convenient functions that **wrap some of the logic we've seen** in previous example(s) and thus it's not always required to use, for example, the `act` function. Another important point is that the `act` function from test renderer [behaves the same](https://reactjs.org/docs/test-utils.html#act) as the `act` function from react test utils.
 
 The **key difference is** that React Testing Libraries renders to DOM Nodes and Test Renderer renders to React Components.
 
@@ -100,15 +158,16 @@ root.getByLabelText('label text');
 root.findAllByTitle(/Title \d+/);
 ```
 
-### Using the 'findBy...' 'queryBy...' and 'getBy...' functions
 Notice that in the example above we use the a `root.debug()` which is a utility function that prints the HTML concent of the rendered variable. It's kinda neat for debugging if we're expecting values in testing but are not able to get them via the aforementioned methods. Exact definitions of each type of function can be found in [the official documentation](https://testing-library.com/docs/queries/about#types-of-queries):
 
 - `getBy...()`: Returns the matching node for a query, and throw a descriptive error if no elements match or if more than one match is found (use getAllBy instead if more than one element is expected).
 - `queryBy...()`: Returns the matching node for a query, and return null if no elements match. This is useful for asserting an element that is not present. Throws an error if more than one match is found (use queryAllBy instead if this is OK).
 - `findBy...()`: Returns a Promise which resolves when an element is found which matches the given query. The promise is rejected if no element is found or if more than one element is found after a default timeout of 1000ms. If you need to find more than one element, use findAllBy.
 
+Each function has specific twerks, for example if we decide to use `getBy...` we don't have to `expect` a result because the test will fail anyways if the `getBy...` function fails.
+
 ### Screen for the win
-React testing library offers an amazing tool that enables us to access the DOM as describe in the most latter part of the last section. This is thanks to the `screen` component.
+React testing library offers an amazing tool that enables us to access the DOM as describe in the most latter part of the last section. This is thanks to the `screen` component which also happens [to be recommended for use](https://testing-library.com/docs/queries/about#using-queries).
 
 ```tsx
 import { screen } from '@testing-library/react';
@@ -142,6 +201,17 @@ it('should render title on start', () => {
 
 [^1]: If our test checks whether user specified correct input OR the input has appropriate label, test failure wouldn't reveal the problem right away. On the other hand having test for input correctness will immediately reveal that the input is incorrect if the test failed.
 
+### Helper functions
+
+There are some tools in the React Testing Library that make our life easier, just like the `screen` tool. `logRoles` is one of them. It let's us see all the roles associated with a given element. Rendering the element and grabbing its `baseElement` we can see the associated roles:
+
+```tsx
+import { logRoles } from '@testing-library/dom';
+
+const root = render(<App />);
+logRoles(root.baseElement);
+
+```
 
 ## Testing Events
 Events can be tested on prop functions passed to the component. We need to use mocks to be able to detect any invocations, argument parsing, return value validation and others. Therefore we will use Jets' `jest.fn()`. We can supply default implementation to this `fn` function or even hard-code values that the function will return:

@@ -14,7 +14,7 @@ const CourseSlice: Slice = createSlice({
   name: 'courses',
   initialState,
   reducers: {
-    addCourse: (store: ReduxStore, action: PayloadAction<Course>) => {
+    addCourse: (store: CourseSliceState, action: PayloadAction<Course>) => {
       store.courses.push(action.payload);
     }
 

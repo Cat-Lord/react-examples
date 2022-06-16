@@ -6,6 +6,7 @@ import CoursePage from '../courses/CoursePage';
 import Home from '../home/Home';
 import PageNotFound from '../PageNotFound';
 import Header from './Header';
+import CatFactsView from '../facts/CatFacts';
 
 const App: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/courses" element={<CoursePage />} />
+        <Route path="/facts/cats" element={<CatFactsView />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
